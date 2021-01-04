@@ -1,6 +1,7 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import {
   faCube,
+  faCubes,
   faExchangeAlt,
   faHome,
   faLayerGroup,
@@ -12,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 type Props = {
   children?: ReactNode;
@@ -86,7 +88,7 @@ const Wrapper = styled.div<WrapperProps>`
     text-align: center;
 
     .icon {
-      width: 27px;
+      width: 20px;
       height: 60px;
       font-size: 23px;
     }
@@ -120,7 +122,6 @@ const Wrapper = styled.div<WrapperProps>`
 
       span {
         font-size: 12px;
-        font-weight: bold;
         text-transform: capitalize;
         line-height: 30px;
         margin-left: 20px;
@@ -168,7 +169,12 @@ const Wrapper = styled.div<WrapperProps>`
   }
 `;
 
-const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
+const Layout = ({
+  children,
+  title = 'Docker Registry Web UI',
+}: Props) => {
+  const route = useRouter();
+  console.log('[RENDER] Layout', route);
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
   const _handleClickExchangeBtn = useCallback(() => {
@@ -224,6 +230,12 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
                 <span>temp-docker-register</span>
               </div>
             )}
+            <div className='side-element side-home'>
+              <span>Images</span>
+              <div className='icon-wrapper'>
+                <FontAwesomeIcon className='icon' icon={faCubes} />
+              </div>
+            </div>
             <div className='side-element side-home'>
               <span>arm64v8</span>
               <div className='icon-wrapper'>

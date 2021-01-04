@@ -3,7 +3,9 @@
 // example, to import the interface below do:
 
 export interface Registry {
+  id: number;
   name: string;
   host: string;
   port?: string;
+  token?: string;
 }

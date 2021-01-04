@@ -9,7 +9,7 @@ interface Props {
 }
 
 const App = ({ Component, pageProps }: Props) => {
-  console.log('[Render] App');
+  console.log('[Render] App', pageProps);
   return (
     <Layout>
       <Component {...pageProps} />

@@ -6,12 +6,12 @@ interface WrapperProps {}
 
 const Wrapper = styled.div<WrapperProps>``;
 
-const Catalog = () => {
+const Manifest = () => {
   return (
     <Wrapper>
-      <div>catalog</div>
+      <div>Manifest</div>
     </Wrapper>
   );
 };
 
-export default Catalog;
+export default Manifest;
