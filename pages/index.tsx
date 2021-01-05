@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 
 const Wrapper = styled.div`
-  width: 1288px;
+  width: 100%;
   padding: 0;
 
   .registry-list {
@@ -14,6 +14,10 @@ const Wrapper = styled.div`
 
     li {
       border: 1px solid #ccc;
+
+      p {
+        height: 500px;
+      }
     }
   }
 `;
@@ -24,10 +28,10 @@ const Index = ({ ...props }) => {
   return (
     <Wrapper>
       <ul className='registry-list'>
-        {registries.map(({ host }) => (
-          <li key={host}>
+        {registries.map(({ name, host }) => (
+          <li key={name}>
             <Link href={host}>
-              <span>{host}</span>
+              <p>{name}</p>
             </Link>
           </li>
         ))}
@@ -42,7 +46,7 @@ export const getServerSideProps = async () => {
   };
 
   try {
-    const res = await axios.get('http://localhost:3000/api/registries');
+    const res = await axios.get('http://localhost:3000/api/registry');
 
     if (res && res.data) {
       props.registries = res.data;

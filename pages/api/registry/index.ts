@@ -15,7 +15,7 @@ const { serverRuntimeConfig } = getConfig();
 
 const REGISTRY_FILE_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
-  './data/registry.json'
+  'data/registry.json'
 );
 
 const data: Data = {
@@ -94,30 +94,33 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (error) {
     if (error.response) {
       const { status } = error.response;
-
       if (status === 401) {
         res.setHeader('www-authenticate', 'Basic realm="Registry Realm"');
-        return res.status(401).end();
+        return res.status(401).json({});
       }
+    } else if (error.errno === -3008) {
+      return res.status(400).json({
+        message: 'Invalid hostname',
+      });
     }
     throw error;
   }
 };
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case 'GET':
-        get(req, res);
+        await get(req, res);
         break;
       case 'POST':
-        post(req, res);
+        await post(req, res);
         break;
       default:
         res.status(404).end();
     }
   } catch (error) {
-    res.status(500).send('Internal Error');
+    res.status(500).json({ error });
   }
 };
 
