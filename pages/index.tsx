@@ -23,15 +23,15 @@ const Wrapper = styled.div`
 `;
 
 const Index = ({ ...props }) => {
-  const [registries, setRegistries] = useState<Registry[]>(props.registries);
+  const [registries] = useState<Registry[]>(props.registries);
 
   return (
     <Wrapper>
       <ul className='registry-list'>
         {registries.map(({ name, host }) => (
           <li key={name}>
-            <Link href={host}>
-              <p>{name}</p>
+            <Link href='#'>
+              <p>{host}</p>
             </Link>
           </li>
         ))}

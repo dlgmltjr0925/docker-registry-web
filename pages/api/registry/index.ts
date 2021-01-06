@@ -44,7 +44,7 @@ const getRegisty = (): Data => {
   }
 };
 
-const get = async (req: NextApiRequest, res: NextApiResponse) => {
+const get = async (_: NextApiRequest, res: NextApiResponse) => {
   try {
     const data = getRegisty();
 

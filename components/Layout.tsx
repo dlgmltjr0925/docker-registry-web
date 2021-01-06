@@ -4,7 +4,6 @@ import Head from 'next/head';
 import Header from './Header';
 import SideBar from './SideBar';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 type Props = {
   children?: ReactNode;
@@ -36,7 +35,7 @@ const Wrapper = styled.div<WrapperProps>`
     right: 0;
     padding-left: ${({ isOpened }) => (isOpened ? '250px' : '70px')};
     min-height: 100vh;
-    transition: all 0.5s ease-in-out;
+    transition: padding-left 0.5s ease-in-out;
 
     .wrapper {
       background: #ccc;
@@ -49,7 +48,6 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
-  const route = useRouter();
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
   const _handleClickFold = useCallback(() => {
@@ -64,7 +62,7 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
         <link rel='preconnect' href='https://fonts.gstatic.com' />
         <link
-          href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap'
+          href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap'
           rel='stylesheet'
         />
         <link

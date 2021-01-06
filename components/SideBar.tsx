@@ -1,14 +1,10 @@
-import {
-  faCube,
-  faCubes,
-  faExchangeAlt,
-  faHome,
-  faLayerGroup,
-  faPlug,
-  faTags,
-} from '@fortawesome/free-solid-svg-icons';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import IconCube from '../public/images/icon_cube.svg';
+import IconCubes from '../public/images/icon_cubes.svg';
+import IconDashboard from '../public/images/icon_dashboard.svg';
+import IconExchange from '../public/images/icon_exchange.svg';
+import IconHome from '../public/images/icon_home.svg';
+import IconLayer from '../public/images/icon_layer.svg';
+import IconTags from '../public/images/icon_tags.svg';
 import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
@@ -29,61 +25,64 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
   width: 250px;
   min-height: inherit;
   color: #bebfdc;
-  transition: all 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
   transform: translateX(${({ isOpened }) => (isOpened ? '0' : '-180px')});
+  overflow: hidden;
 
   .sidebar-header {
     position: relative;
     width: 100%;
     height: 60px;
     background: #2f3f60;
-  }
 
-  .sidebar-header a {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 180px;
-    padding: 5px;
-    color: #59bee7;
-    transition: all 0.3s 0.2s ease-in-out;
-    transform: translateX(${({ isOpened }) => (isOpened ? '0' : '-180px')});
-  }
+    a {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 180px;
+      padding: 5px;
+      color: #59bee7;
+      transition: transform 0.3s 0.2s ease-in-out;
 
-  .sidebar-header a .home-logo {
-    display: inline-block;
-    vertical-align: bottom;
-  }
+      .home-logo {
+        display: inline-block;
+        vertical-align: bottom;
+      }
 
-  .sidebar-header a span {
-    display: inline-block;
-    padding: 4px 0 10px 5px;
-    font-size: 16px;
-    letter-spacing: -0.5px;
-  }
-
-  .sidebar-header .exchange-btn {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 70px;
-    height: 60px;
-    color: #bebfdc;
-    text-align: center;
-
-    .icon {
-      width: 20px;
-      height: 60px;
-      font-size: 23px;
+      span {
+        display: inline-block;
+        padding: 4px 0 10px 5px;
+        font-size: 16px;
+        letter-spacing: -0.5px;
+      }
     }
 
-    &:hover {
-      cursor: pointer;
+    .exchange-btn {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 70px;
+      height: 60px;
+      text-align: center;
 
       .icon {
-        color: #fff;
+        margin-top: 20px;
+        width: 20px;
+        height: 20px;
+
+        path {
+          fill: #bebfdc;
+        }
+      }
+
+      &:hover {
+        cursor: pointer;
+
+        .icon path {
+          fill: #fff;
+        }
       }
     }
   }
@@ -122,10 +121,14 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         height: 30px;
 
         .icon {
-          width: 16px;
-          height: 100%;
           display: block;
           margin: auto;
+          width: 20px;
+          height: 20px;
+
+          path {
+            fill: #bebfdc;
+          }
         }
       }
     }
@@ -174,7 +177,7 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           </a>
         </Link>
         <div className='exchange-btn' onClick={onClickFold}>
-          <FontAwesomeIcon className='icon' icon={faExchangeAlt} />
+          <IconExchange className='icon' />
         </div>
       </div>
       {/* 사이드바 컨텐츠 */}
@@ -182,14 +185,14 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
         <div className='side-element'>
           <span>home</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faHome} />
+            <IconHome className='icon' />
           </div>
         </div>
         {/* 연결된 레지스트리 */}
         {isOpened && (
           <div className='side-connect'>
             <div className='icon-wrapper'>
-              <FontAwesomeIcon className='icon' icon={faPlug} />
+              <IconDashboard className='icon' />
             </div>
             <span>temp-docker-register</span>
           </div>
@@ -197,43 +200,43 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
         <div className='side-element side-home'>
           <span>Images</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faCubes} />
+            <IconCubes className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>arm64v8</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faCube} />
+            <IconCube className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>tags</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faTags} />
+            <IconTags className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>manifest</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faLayerGroup} />
+            <IconLayer className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>nginx</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faCube} />
+            <IconCube className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>kafka</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faCube} />
+            <IconCube className='icon' />
           </div>
         </div>
         <div className='side-element side-home'>
           <span>mysql</span>
           <div className='icon-wrapper'>
-            <FontAwesomeIcon className='icon' icon={faCube} />
+            <IconCube className='icon' />
           </div>
         </div>
       </div>
