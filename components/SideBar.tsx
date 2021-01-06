@@ -195,14 +195,12 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           </div>
         </div>
         {/* 연결된 레지스트리 */}
-        {isOpened && (
-          <div className='side-connect'>
-            <div className='icon-wrapper'>
-              <IconDashboard className='icon' />
-            </div>
-            <span>temp-docker-register</span>
+        <div className='side-element side-home'>
+          <span>Dashboard</span>
+          <div className='icon-wrapper'>
+            <IconDashboard className='icon' />
           </div>
-        )}
+        </div>
         <div className='side-element side-home'>
           <span>Images</span>
           <div className='icon-wrapper'>
