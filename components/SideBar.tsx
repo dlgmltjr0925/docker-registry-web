@@ -130,6 +130,12 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
             fill: #bebfdc;
           }
         }
+
+        &:hover {
+          .icon path {
+            fill: #fff;
+          }
+        }
       }
     }
 
