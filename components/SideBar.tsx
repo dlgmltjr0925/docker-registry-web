@@ -9,7 +9,6 @@ import Link from 'next/link';
 import React from 'react';
 import { RouteType } from '../utils/router';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 interface SideBarProps {
   isOpened: boolean;
@@ -192,8 +191,6 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
 `;
 
 const SideBar = ({ isOpened, onClickFold, routeType }: SideBarProps) => {
-  const { query } = useRouter();
-
   return (
     <SideBarWrapper isOpened={isOpened}>
       {/* 사이드바 헤더 */}

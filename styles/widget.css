@@ -1,0 +1,67 @@
+.widget-wrapper {
+  margin: 0 15px 15px 15px;
+  background: #fff;
+  box-shadow: 1px 1px 3px #ccc;
+}
+
+.wdiget-wrapper path {
+  fill: #767676;
+}
+
+.widget-wrapper .widget-header-wrapper {
+  background: #f6f6f6;
+  height: 45px;
+}
+
+.widget-wrapper .header-title {
+  display: inline;
+  padding: 0 10px;
+}
+.widget-wrapper .header-title span {
+  font-size: 14px;
+  color: #767676;
+  margin-left: 5px;
+  font-weight: 600;
+}
+.widget-wrapper .header-icon {
+  width: 15px;
+  height: 100%;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.widget-wrapper .header-icon path {
+  fill: #767676;
+}
+
+.widget-wrapper .widget-row-wrapper {
+  padding: 10px;
+}
+
+.widget-wrapper .button1 {
+  margin: 0 0 0 5px;
+  padding: 5px 10px;
+  background: #337ab7;
+  color: #fff;
+  font-size: 12px;
+  line-height: 150%;
+  border-radius: 3px;
+}
+
+.widget-wrapper .button1:hover {
+  background: #36608c;
+}
+
+.widget-wrapper .button1:focus {
+  outline: 0;
+}
+
+.widget-wrapper .button1 .button-icon {
+  width: 10px;
+  height: 100%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.widget-wrapper .button1 .button-icon path {
+  fill: #fff;
+}

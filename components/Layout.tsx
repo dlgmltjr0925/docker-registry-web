@@ -36,12 +36,9 @@ const Wrapper = styled.div<WrapperProps>`
     min-height: 100vh;
     transition: padding-left 0.5s ease-in-out;
 
-    .wrapper {
-      background: #ccc;
-    }
-
     section {
       margin-top: 75px;
+      width: 100%;
     }
   }
 `;
@@ -64,10 +61,10 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
         <meta charSet='utf-8' />
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
         <link rel='preconnect' href='https://fonts.gstatic.com' />
-        <link
+        {/* <link
           href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap'
           rel='stylesheet'
-        />
+        /> */}
         <link
           rel='icon'
           type='image/png'

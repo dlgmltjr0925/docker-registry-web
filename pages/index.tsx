@@ -1,3 +1,6 @@
+import IconConnect from '../public/images/icon_connect.svg';
+import IconRefresh from '../public/images/icon_refresh.svg';
+import IconSearch from '../public/images/icon_search.svg';
 import Link from 'next/link';
 import { Registry } from '../interfaces';
 import axios from 'axios';
@@ -5,40 +8,83 @@ import styled from 'styled-components';
 import { useState } from 'react';
 
 const Wrapper = styled.div`
-  width: 100%;
-  padding: 0;
+  .search-wrapper {
+    border-top: 1px solid #d2d1d1;
+    border-bottom: 1px solid #d2d1d1;
 
-  .registry-list {
-    list-style: none;
-    padding: 0;
+    .search-icon {
+      width: 17px;
+      height: 100%;
+      vertical-align: middle;
 
-    li {
-      p {
-        height: 500px;
+      path {
+        fill: #767676;
       }
+    }
+
+    input {
+      width: 95%;
+      margin-left: 10px;
+      outline: none;
+      border: none;
+      font-size: 14px;
+      line-height: 22px;
     }
   }
 `;
 
-const Index = ({ ...props }) => {
+const Home = ({ ...props }) => {
+  console.log('Home');
   const [registries] = useState<Registry[]>(props.registries);
 
   return (
     <Wrapper>
-      <ul className='registry-list'>
-        {registries.map(({ id, name, host }) => (
-          <li key={`${id}-${name}`}>
-            <Link href='#'>
-              <p>{host}</p>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className='widget-wrapper'>
+        <div className='widget-header-wrapper'>
+          <div className='header-title'>
+            <IconConnect className='header-icon' />
+            <span>Endpoints</span>
+          </div>
+        </div>
+        <div className='widget-row-wrapper'>
+          <button
+            className='button1'
+            type='button'
+            onClick={() => {
+              console.log('onClick');
+            }}
+          >
+            <IconRefresh className='button-icon' />
+            Refresh
+          </button>
+        </div>
+        <div className='widget-row-wrapper search-wrapper'>
+          <IconSearch className='search-icon' />
+          <input type='text' />
+        </div>
+        <div className='widget-row wrapper'>
+          {registries.length === 0 ? (
+            <p>No endpoint available</p>
+          ) : (
+            <ul>
+              {registries.map(({ id, name, host }) => (
+                <li key={`${id}-${name}`}>
+                  <Link href='#'>
+                    <p>{host}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </Wrapper>
   );
 };
 
 export const getServerSideProps = async () => {
+  console.log('getServerSideProps');
+
   const props = {
     registries: [],
   };
@@ -58,4 +104,4 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default Index;
+export default Home;

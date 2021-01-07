@@ -1,4 +1,6 @@
-import '../styles/reset.css';
+import '../styles/global.css';
+import '../styles/font.css';
+import '../styles/widget.css';
 
 import Layout from '../components/Layout';
 import React from 'react';
