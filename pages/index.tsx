@@ -28,8 +28,8 @@ const Index = ({ ...props }) => {
   return (
     <Wrapper>
       <ul className='registry-list'>
-        {registries.map(({ name, host }) => (
-          <li key={name}>
+        {registries.map(({ id, name, host }) => (
+          <li key={`${id}-${name}`}>
             <Link href='#'>
               <p>{host}</p>
             </Link>

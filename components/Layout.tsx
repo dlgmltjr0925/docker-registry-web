@@ -3,7 +3,9 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import SideBar from './SideBar';
+import { getRouteTypeFromRoute } from '../utils/router';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 type Props = {
   children?: ReactNode;
@@ -48,6 +50,10 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
+  const { route } = useRouter();
+
+  const routeType = getRouteTypeFromRoute(route);
+
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
   const _handleClickFold = useCallback(() => {
@@ -73,10 +79,14 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
         />
       </Head>
       <div id='body'>
-        <SideBar isOpened={isOpened} onClickFold={_handleClickFold} />
+        <SideBar
+          routeType={routeType}
+          isOpened={isOpened}
+          onClickFold={_handleClickFold}
+        />
         <div id='content-wrapper'>
           <div className='wrapper'>
-            <Header />
+            <Header routeType={routeType} />
             <section>{children}</section>
           </div>
         </div>

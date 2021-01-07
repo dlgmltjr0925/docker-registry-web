@@ -1,17 +1,20 @@
+import IconConnect from '../public/images/icon_connect.svg';
 import IconCube from '../public/images/icon_cube.svg';
 import IconCubes from '../public/images/icon_cubes.svg';
 import IconDashboard from '../public/images/icon_dashboard.svg';
 import IconExchange from '../public/images/icon_exchange.svg';
 import IconHome from '../public/images/icon_home.svg';
-import IconLayer from '../public/images/icon_layer.svg';
 import IconTags from '../public/images/icon_tags.svg';
 import Link from 'next/link';
 import React from 'react';
+import { RouteType } from '../utils/router';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 interface SideBarProps {
   isOpened: boolean;
   onClickFold: () => void;
+  routeType: RouteType;
 }
 
 interface SideBarWrapperProps {
@@ -106,11 +109,26 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         background: #2f3f60;
       }
 
+      &.active {
+        border-left: 3px solid #fff;
+        color: #fff;
+        font-weight: bold;
+        background: #2f3f60;
+
+        .icon-wrapper .icon path {
+          fill: #fff;
+        }
+      }
+
       span {
-        font-size: 12px;
+        font-size: 13px;
         text-transform: capitalize;
         line-height: 30px;
         margin-left: 20px;
+
+        &.sub {
+          margin-left: 35px;
+        }
       }
 
       .icon-wrapper {
@@ -124,7 +142,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
           display: block;
           margin: auto;
           width: 20px;
-          height: 20px;
+          height: 30px;
 
           path {
             fill: #bebfdc;
@@ -139,33 +157,43 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       }
     }
 
-    .side-connect {
-      position: relative;
+    .connect-wrapper {
       width: 100%;
       height: 30px;
-      margin-left: 13px;
       color: #fff;
+      text-align: center;
 
       .icon-wrapper {
         display: inline-block;
         width: 20px;
+        height: 30px;
+        margin-right: 10px;
+        border-width: 1;
+        vertical-align: middle;
 
         .icon {
-          width: 10px;
+          width: 20px;
+          height: 30px;
+
+          path {
+            fill: #fff;
+          }
         }
       }
 
       span {
-        display: inline-block;
-        font-size: 12px;
-        line-height: 30px;
+        font-size: 13px;
+        line-height: 26px;
+        font-weight: bold;
         text-transform: uppercase;
       }
     }
   }
 `;
 
-const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
+const SideBar = ({ isOpened, onClickFold, routeType }: SideBarProps) => {
+  const { query } = useRouter();
+
   return (
     <SideBarWrapper isOpened={isOpened}>
       {/* 사이드바 헤더 */}
@@ -188,56 +216,74 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
       </div>
       {/* 사이드바 컨텐츠 */}
       <div className='sidebar-content'>
-        <div className='side-element'>
-          <span>home</span>
-          <div className='icon-wrapper'>
-            <IconHome className='icon' />
+        <Link href='/'>
+          <div
+            className={`side-element${routeType === 'HOME' ? ' active' : ''}`}
+          >
+            <span>home</span>
+            <div className='icon-wrapper'>
+              <IconHome className='icon' />
+            </div>
           </div>
-        </div>
+        </Link>
         {/* 연결된 레지스트리 */}
-        <div className='side-element side-home'>
-          <span>Dashboard</span>
+        <div className='connect-wrapper'>
           <div className='icon-wrapper'>
-            <IconDashboard className='icon' />
+            <IconConnect className='icon' />
           </div>
+          <span>server-name</span>
         </div>
-        <div className='side-element side-home'>
-          <span>Images</span>
-          <div className='icon-wrapper'>
-            <IconCubes className='icon' />
+        <Link href='/dashboard/1'>
+          <div
+            className={`side-element${
+              routeType === 'DASHBOARD' ? ' active' : ''
+            }`}
+          >
+            <span>Dashboard</span>
+            <div className='icon-wrapper'>
+              <IconDashboard className='icon' />
+            </div>
           </div>
-        </div>
-        <div className='side-element side-home'>
-          <span>arm64v8</span>
-          <div className='icon-wrapper'>
-            <IconCube className='icon' />
+        </Link>
+        <Link href='/images/1'>
+          <div
+            className={`side-element${routeType === 'IMAGES' ? ' active' : ''}`}
+          >
+            <span>Images</span>
+            <div className='icon-wrapper'>
+              <IconCubes className='icon' />
+            </div>
           </div>
-        </div>
-        <div className='side-element side-home'>
-          <span>tags</span>
-          <div className='icon-wrapper'>
-            <IconTags className='icon' />
+        </Link>
+        <Link href='/image/1/arm64v8'>
+          <div className='side-element'>
+            <span>arm64v8</span>
+            <div className='icon-wrapper'>
+              <IconCube className='icon' />
+            </div>
           </div>
-        </div>
-        <div className='side-element side-home'>
-          <span>manifest</span>
-          <div className='icon-wrapper'>
-            <IconLayer className='icon' />
+        </Link>
+        <Link href='/tags/1/arm64v8'>
+          <div className='side-element'>
+            <span className='sub'>tags</span>
+            <div className='icon-wrapper'>
+              <IconTags className='icon' />
+            </div>
           </div>
-        </div>
-        <div className='side-element side-home'>
+        </Link>
+        <div className='side-element'>
           <span>nginx</span>
           <div className='icon-wrapper'>
             <IconCube className='icon' />
           </div>
         </div>
-        <div className='side-element side-home'>
+        <div className='side-element'>
           <span>kafka</span>
           <div className='icon-wrapper'>
             <IconCube className='icon' />
           </div>
         </div>
-        <div className='side-element side-home'>
+        <div className='side-element'>
           <span>mysql</span>
           <div className='icon-wrapper'>
             <IconCube className='icon' />

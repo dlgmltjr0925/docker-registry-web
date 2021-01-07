@@ -6,17 +6,15 @@ interface WrapperProps {}
 
 const Wrapper = styled.div<WrapperProps>``;
 
-const Images = () => {
-  const router = useRouter();
-
-  console.log(router.query);
+const Dashboard = () => {
+  const route = useRouter();
 
   return (
     <Wrapper>
-      <div>{router.query.id}</div>
-      <div>images</div>
+      <div>{route.query.id}</div>
+      <div>dashboard</div>
     </Wrapper>
   );
 };
 
-export default Images;
+export default Dashboard;
