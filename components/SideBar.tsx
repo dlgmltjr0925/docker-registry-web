@@ -182,7 +182,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       }
 
       span {
-        font-size: 13px;
+        font-size: 12px;
         line-height: 26px;
         font-weight: bold;
         text-transform: uppercase;

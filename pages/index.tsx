@@ -13,8 +13,6 @@ const Wrapper = styled.div`
     padding: 0;
 
     li {
-      border: 1px solid #ccc;
-
       p {
         height: 500px;
       }

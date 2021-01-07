@@ -19,9 +19,6 @@ interface WrapperProps {
 const Wrapper = styled.div<WrapperProps>`
   #body {
     position: relative;
-    display: flex;
-    flex-direction: row;
-    flex: 1;
     min-height: 100vh;
     background: #f3f3f3;
   }
