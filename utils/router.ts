@@ -7,7 +7,9 @@ export type RouteType =
   | 'MANIFEST'
   | null;
 
-export const getRouteTypeFromRoute = (route: string): RouteType => {
+export interface RouteInfo {}
+
+export const getRouteType = (route: string): RouteType => {
   const type = route.match(/^\/[_a-zA-Z0-9]*/);
   if (type) {
     const routeType = type[0].toLowerCase().substring(1);

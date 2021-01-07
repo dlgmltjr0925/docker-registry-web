@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 
+import Link from 'next/link';
 import { RouteType } from '../utils/router';
+import { route } from 'next/dist/next-server/server/router';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -29,17 +31,85 @@ const HeaderWrapper = styled.header`
 `;
 
 const Header = ({ routeType }: HeaderProps) => {
-  const { query } = useRouter();
+  const { route, query } = useRouter();
 
   const title = useMemo(() => {
     return routeType ? routeType?.toLowerCase() : 'Not Found';
   }, [routeType]);
 
+  const subTitle = useMemo(() => {
+    const { id, name } = query;
+    if (routeType === 'HOME') {
+      return (
+        <div>
+          <span>Endpoints</span>
+        </div>
+      );
+    } else if (routeType === 'DASHBOARD') {
+      return (
+        <div>
+          <span>Endpoint Summary</span>
+        </div>
+      );
+    } else if (routeType === 'IMAGES') {
+      return (
+        <div>
+          <span>Image List</span>
+        </div>
+      );
+    } else if (routeType === 'IMAGE') {
+      return (
+        <div>
+          <Link href={`/images/${id}`}>
+            <span>images</span>
+          </Link>
+          {` > `}
+          <Link href={`/image/${id}/${name}`}>
+            <span>{name || ''}</span>
+          </Link>
+        </div>
+      );
+    } else if (routeType === 'TAGS') {
+      return (
+        <div>
+          <Link href={`/images/${id}`}>
+            <span>images</span>
+          </Link>
+          {` > `}
+          <Link href={`/image/${id}/${name}`}>
+            <span>{name || ''}</span>
+          </Link>
+          {` > `}
+          <Link href={`/tags/${id}/${name}`}>
+            <span>tags</span>
+          </Link>
+        </div>
+      );
+    } else if (routeType === 'MANIFEST') {
+      return (
+        <div>
+          <Link href={`/images/${id}`}>
+            <span>images</span>
+          </Link>
+          {` > `}
+          <Link href={`/image/${id}/${name}`}>
+            <span>{name || ''}</span>
+          </Link>
+          {` > `}
+          <Link href={`/tags/${id}/${name}`}>
+            <span>tags</span>
+          </Link>
+        </div>
+      );
+    }
+    return null;
+  }, [routeType, query]);
+
   return (
     <HeaderWrapper>
       <div className='title-wrapper'>
         <p className='title'>{title}</p>
-        <p>{query.id}</p>
+        <div>{subTitle}</div>
       </div>
       <p className='path'></p>
     </HeaderWrapper>

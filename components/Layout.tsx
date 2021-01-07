@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import SideBar from './SideBar';
-import { getRouteTypeFromRoute } from '../utils/router';
+import { getRouteType } from '../utils/router';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -52,7 +52,7 @@ const Wrapper = styled.div<WrapperProps>`
 const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
   const { route } = useRouter();
 
-  const routeType = getRouteTypeFromRoute(route);
+  const routeType = getRouteType(route);
 
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
