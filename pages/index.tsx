@@ -31,6 +31,12 @@ const Wrapper = styled.div`
       line-height: 22px;
     }
   }
+
+  .empty-content {
+    display: block;
+    text-align: center;
+    padding: 15px 0;
+  }
 `;
 
 const Home = ({ ...props }) => {
@@ -64,7 +70,7 @@ const Home = ({ ...props }) => {
         </div>
         <div className='widget-row wrapper'>
           {registries.length === 0 ? (
-            <p>No endpoint available</p>
+            <p className='empty-content'>No endpoint available</p>
           ) : (
             <ul>
               {registries.map(({ id, name, host }) => (
