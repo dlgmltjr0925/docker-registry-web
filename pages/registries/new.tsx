@@ -3,6 +3,8 @@ import React, { useCallback, useState } from 'react';
 import IconWarning from '../../public/images/icon_warning.svg';
 import Switch from '../../components/Switch';
 import styled from 'styled-components';
+import { useAddRegistry } from '../../hooks/registries';
+import { useRouter } from 'next/router';
 
 interface WrapperProps {}
 
@@ -27,7 +29,7 @@ const Wrapper = styled.div<WrapperProps>`
       display: inline-block;
       width: 50%;
       height: 34px;
-      padding: 6px 12pxl;
+      padding: 6px 12px;
       background: #fff;
       border: 1px solid #ccc;
       box-sizing: border-box;
@@ -38,6 +40,11 @@ const Wrapper = styled.div<WrapperProps>`
       color: #555;
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
         -webkit-box-shadow 0.15s ease-in-out;
+    }
+
+    input::placeholder {
+      color: #999;
+      font-weight: 500;
     }
 
     input:focus {
@@ -67,11 +74,14 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const New = () => {
+  const router = useRouter();
+
   const [name, setName] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const [hasAuth, setHasAuth] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const { isUploading, addRegisty } = useAddRegistry();
 
   const _handleChangeName = useCallback(
     ({ target: { value } }) => {
@@ -106,13 +116,31 @@ const New = () => {
     url.trim() === '' ||
     (hasAuth && (username.trim() === '' || password.trim() === ''));
 
+  const _handleClickAddButton = async () => {
+    try {
+      const res = await addRegisty({ name, url, hasAuth, username, password });
+
+      if (res) {
+        const { status } = res;
+        if (status === 200) router.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className='widget-wrapper'>
       <Wrapper>
         {/* 레지스트리 이름 */}
         <div className='input-wrapper'>
           <label className='input-category'>Name</label>
-          <input type='text' value={name} onChange={_handleChangeName} />
+          <input
+            type='text'
+            placeholder='my-docker-registry'
+            value={name}
+            onChange={_handleChangeName}
+          />
         </div>
         {name.trim() === '' && (
           <span className='require'>
@@ -123,7 +151,12 @@ const New = () => {
         {/* 레지스트리 URL */}
         <div className='input-wrapper'>
           <label className='input-category'>Registry URL</label>
-          <input type='text' value={url} onChange={_handleChangeUrl} />
+          <input
+            type='text'
+            placeholder='myregistry.domain.tld or 10.0.0.10:5000'
+            value={url}
+            onChange={_handleChangeUrl}
+          />
         </div>
         {url.trim() === '' && (
           <span className='require'>
@@ -176,8 +209,12 @@ const New = () => {
           </>
         )}
         <div className='input-wrapper'>
-          <button disabled={buttonDisabled} className='button button-blue'>
-            Add registry
+          <button
+            disabled={buttonDisabled}
+            className='button button-blue'
+            onClick={_handleClickAddButton}
+          >
+            {isUploading ? 'In progress' : 'Add registry'}
           </button>
         </div>
       </Wrapper>

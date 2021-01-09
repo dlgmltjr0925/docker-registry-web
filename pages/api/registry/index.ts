@@ -84,7 +84,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
         'utf8'
       );
 
-      res.status(200).send({ data: 'success' });
+      res.status(200).send({ result: 'success' });
     }
   } catch (error) {
     if (error.response) {
