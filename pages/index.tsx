@@ -1,6 +1,7 @@
 import IconConnect from '../public/images/icon_connect.svg';
-import IconRefresh from '../public/images/icon_refresh.svg';
+import IconPlus from '../public/images/icon_plus.svg';
 import IconSearch from '../public/images/icon_search.svg';
+import IconTrash from '../public/images/icon_trash.svg';
 import Link from 'next/link';
 import { Registry } from '../interfaces';
 import axios from 'axios';
@@ -54,15 +55,22 @@ const Home = ({ ...props }) => {
         </div>
         <div className='widget-row-wrapper'>
           <button
-            className='button1'
+            disabled
+            className='button button-red'
             type='button'
             onClick={() => {
               console.log('onClick');
             }}
           >
-            <IconRefresh className='button-icon' />
-            Refresh
+            <IconTrash className='button-icon' />
+            Remove
           </button>
+          <Link href='/registries/new'>
+            <button className='button button-blue' type='button'>
+              <IconPlus className='button-icon' />
+              Add registry
+            </button>
+          </Link>
         </div>
         <div className='widget-row-wrapper search-wrapper'>
           <IconSearch className='search-icon' />

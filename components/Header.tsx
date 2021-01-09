@@ -62,9 +62,9 @@ const getSubTitle = ({
 }: GetSubTitleArgs): JSX.Element | null => {
   const { id, name, tag } = query;
   if (routeType === 'HOME') {
-    return <span>Endpoints</span>;
+    return <span>Registries</span>;
   } else if (routeType === 'DASHBOARD') {
-    return <span>Endpoint Summary</span>;
+    return <span>Registry Summary</span>;
   } else if (routeType === 'IMAGES') {
     return <span>Image List</span>;
   } else if (routeType === 'IMAGE') {

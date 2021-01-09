@@ -4,10 +4,6 @@
   box-shadow: 1px 1px 3px #ccc;
 }
 
-.wdiget-wrapper path {
-  fill: #767676;
-}
-
 .widget-wrapper .widget-header-wrapper {
   background: #f6f6f6;
   height: 45px;
@@ -38,7 +34,7 @@
   padding: 10px;
 }
 
-.widget-wrapper .button1 {
+.widget-wrapper .button-blue {
   margin: 0 0 0 5px;
   padding: 5px 10px;
   background: #337ab7;
@@ -46,22 +42,47 @@
   font-size: 12px;
   line-height: 150%;
   border-radius: 3px;
+  font-weight: 600;
 }
 
-.widget-wrapper .button1:hover {
+.widget-wrapper .button-blue:hover {
   background: #36608c;
 }
 
-.widget-wrapper .button1:focus {
+.widget-wrapper .button:focus {
   outline: 0;
 }
 
-.widget-wrapper .button1 .button-icon {
+.widget-wrapper .button .button-icon {
   width: 10px;
   height: 100%;
   margin-right: 5px;
   vertical-align: middle;
 }
-.widget-wrapper .button1 .button-icon path {
+
+.widget-wrapper .button .button-icon path {
   fill: #fff;
+}
+
+.widget-wrapper .button-red {
+  margin: 0 0 0 5px;
+  padding: 5px 10px;
+  background: #c9302c;
+  color: #fff;
+  font-size: 12px;
+  line-height: 150%;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.widget-wrapper .button-red:hover {
+  background: #36608c;
+}
+
+.widget-wrapper .button-red:focus {
+  outline: 0;
+}
+
+.widget-wrapper .button-red:disabled {
+  background: #dc9690;
 }
