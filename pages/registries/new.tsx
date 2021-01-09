@@ -120,12 +120,13 @@ const New = () => {
     try {
       const res = await addRegisty({ name, url, hasAuth, username, password });
 
-      if (res) {
-        const { status } = res;
+      if (res && res.data) {
+        const { status, message } = res.data;
         if (status === 200) router.push('/');
+        else alert(message);
       }
     } catch (error) {
-      console.log(error);
+      alert(error.message);
     }
   };
 
@@ -214,7 +215,7 @@ const New = () => {
             className='button button-blue'
             onClick={_handleClickAddButton}
           >
-            {isUploading ? 'In progress' : 'Add registry'}
+            {isUploading ? 'In progress...' : 'Add registry'}
           </button>
         </div>
       </Wrapper>

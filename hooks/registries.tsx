@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+import { ApiResult } from '../interfaces/api';
 import { useState } from 'react';
 
 interface AddRegistryArgs {
@@ -19,7 +20,7 @@ export const useAddRegistry = () => {
     hasAuth,
     username,
     password,
-  }: AddRegistryArgs): Promise<AxiosResponse<{ result: string }> | void> => {
+  }: AddRegistryArgs): Promise<AxiosResponse<ApiResult> | void> => {
     try {
       if (isUploading) return;
       setIsUploading(true);
