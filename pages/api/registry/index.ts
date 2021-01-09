@@ -57,16 +57,12 @@ const get = async (_: NextApiRequest, res: NextApiResponse) => {
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = getRegisty();
 
-  const { name, host, port } = req.body;
+  const { name, url } = req.body;
 
   const { authorization } = req.headers;
 
   try {
-    let registryUrl = `https://${host}`;
-    if (port) registryUrl += `:${port}`;
-    registryUrl += '/v2/';
-
-    console.log('registry url : ', registryUrl);
+    let registryUrl = `https://${url}/v2/`;
 
     const headers: { authorization?: string } = {};
 
@@ -77,8 +73,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (result && result.status === 200) {
-      const registry: Registry = { id: ++data.lastId, name, host };
-      if (port) registry.port = port;
+      const registry: Registry = { id: ++data.lastId, name, url };
       if (authorization) registry.token = authorization.split(' ')[1];
 
       data.list.push(registry);

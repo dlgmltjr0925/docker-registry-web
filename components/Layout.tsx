@@ -45,7 +45,7 @@ const Wrapper = styled.div<WrapperProps>`
 const Layout = ({ children }: Props) => {
   const router = useRouter();
 
-  const { title, subtitles } = getLayoutInfo(router);
+  const { title, subtitles, sideTabs } = getLayoutInfo(router);
 
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
@@ -68,7 +68,11 @@ const Layout = ({ children }: Props) => {
         />
       </Head>
       <div id='body'>
-        <SideBar isOpened={isOpened} onClickFold={_handleClickFold} />
+        <SideBar
+          tabs={sideTabs}
+          isOpened={isOpened}
+          onClickFold={_handleClickFold}
+        />
         <div id='content-wrapper'>
           <div className='wrapper'>
             <Header title={title} subtitles={subtitles} />

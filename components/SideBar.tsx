@@ -1,3 +1,6 @@
+import React, { useCallback } from 'react';
+import { SideTab, SideTabType } from '../utils/router';
+
 import IconConnect from '../public/images/icon_connect.svg';
 import IconCube from '../public/images/icon_cube.svg';
 import IconCubes from '../public/images/icon_cubes.svg';
@@ -6,12 +9,12 @@ import IconExchange from '../public/images/icon_exchange.svg';
 import IconHome from '../public/images/icon_home.svg';
 import IconTags from '../public/images/icon_tags.svg';
 import Link from 'next/link';
-import React from 'react';
 import styled from 'styled-components';
 
 interface SideBarProps {
   isOpened: boolean;
   onClickFold: () => void;
+  tabs: SideTab[];
 }
 
 interface SideBarWrapperProps {
@@ -188,8 +191,36 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
   }
 `;
 
-const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
-  const routeType = 'HOME';
+interface getActiveClassArgs {
+  type: SideTabType;
+  options?: Record<string, unknown>;
+  tabs: SideTab[];
+}
+
+const getActiveClass = ({
+  type,
+  options = {},
+  tabs,
+}: getActiveClassArgs): string => {
+  const tab = tabs.find((tab) => {
+    if (tab.type !== type) return false;
+    for (let key in options) {
+      if (tab.options && options[key] !== tab.options[key]) return false;
+    }
+    return true;
+  });
+
+  return tab ? ' active' : '';
+};
+
+const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
+  const _getActiveClass = useCallback(
+    (args: Omit<getActiveClassArgs, 'tabs'>) => {
+      return getActiveClass({ ...args, tabs });
+    },
+    [tabs]
+  );
+
   return (
     <SideBarWrapper isOpened={isOpened}>
       {/* 사이드바 헤더 */}
@@ -213,9 +244,7 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
       {/* 사이드바 컨텐츠 */}
       <div className='sidebar-content'>
         <Link href='/'>
-          <div
-            className={`side-element${routeType === 'HOME' ? ' active' : ''}`}
-          >
+          <div className={`side-element${_getActiveClass({ type: 'home' })}`}>
             <span>home</span>
             <div className='icon-wrapper'>
               <IconHome className='icon' />
@@ -230,7 +259,9 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           <span>server-name</span>
         </div>
         <Link href='/dashboard/1'>
-          <div className={`side-element`}>
+          <div
+            className={`side-element${_getActiveClass({ type: 'dashboard' })}`}
+          >
             <span>Dashboard</span>
             <div className='icon-wrapper'>
               <IconDashboard className='icon' />
@@ -238,7 +269,7 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           </div>
         </Link>
         <Link href='/images/1'>
-          <div className={`side-element`}>
+          <div className={`side-element${_getActiveClass({ type: 'images' })}`}>
             <span>Images</span>
             <div className='icon-wrapper'>
               <IconCubes className='icon' />
@@ -246,7 +277,12 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           </div>
         </Link>
         <Link href='/image/1/arm64v8'>
-          <div className='side-element'>
+          <div
+            className={`side-element${_getActiveClass({
+              type: 'image',
+              options: { name: 'arm64v8' },
+            })}`}
+          >
             <span>arm64v8</span>
             <div className='icon-wrapper'>
               <IconCube className='icon' />
@@ -254,7 +290,12 @@ const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
           </div>
         </Link>
         <Link href='/tags/1/arm64v8'>
-          <div className='side-element'>
+          <div
+            className={`side-element${_getActiveClass({
+              type: 'tags',
+              options: { name: 'arm64v8' },
+            })}`}
+          >
             <span className='sub'>tags</span>
             <div className='icon-wrapper'>
               <IconTags className='icon' />

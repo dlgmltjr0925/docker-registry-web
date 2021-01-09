@@ -5,7 +5,7 @@
 export interface Registry {
   id: number;
   name: string;
-  host: string;
+  url: string;
   port?: string;
   token?: string;
 }
