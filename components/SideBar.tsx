@@ -7,13 +7,11 @@ import IconHome from '../public/images/icon_home.svg';
 import IconTags from '../public/images/icon_tags.svg';
 import Link from 'next/link';
 import React from 'react';
-import { RouteType } from '../utils/router';
 import styled from 'styled-components';
 
 interface SideBarProps {
   isOpened: boolean;
   onClickFold: () => void;
-  routeType: RouteType;
 }
 
 interface SideBarWrapperProps {
@@ -190,7 +188,8 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
   }
 `;
 
-const SideBar = ({ isOpened, onClickFold, routeType }: SideBarProps) => {
+const SideBar = ({ isOpened, onClickFold }: SideBarProps) => {
+  const routeType = 'HOME';
   return (
     <SideBarWrapper isOpened={isOpened}>
       {/* 사이드바 헤더 */}
@@ -231,11 +230,7 @@ const SideBar = ({ isOpened, onClickFold, routeType }: SideBarProps) => {
           <span>server-name</span>
         </div>
         <Link href='/dashboard/1'>
-          <div
-            className={`side-element${
-              routeType === 'DASHBOARD' ? ' active' : ''
-            }`}
-          >
+          <div className={`side-element`}>
             <span>Dashboard</span>
             <div className='icon-wrapper'>
               <IconDashboard className='icon' />
@@ -243,9 +238,7 @@ const SideBar = ({ isOpened, onClickFold, routeType }: SideBarProps) => {
           </div>
         </Link>
         <Link href='/images/1'>
-          <div
-            className={`side-element${routeType === 'IMAGES' ? ' active' : ''}`}
-          >
+          <div className={`side-element`}>
             <span>Images</span>
             <div className='icon-wrapper'>
               <IconCubes className='icon' />

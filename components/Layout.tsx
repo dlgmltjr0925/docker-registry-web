@@ -3,13 +3,12 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import SideBar from './SideBar';
-import { getRouteType } from '../utils/router';
+import { getLayoutInfo } from '../utils/router';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 type Props = {
   children?: ReactNode;
-  title?: string;
 };
 
 interface WrapperProps {
@@ -43,10 +42,10 @@ const Wrapper = styled.div<WrapperProps>`
   }
 `;
 
-const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
-  const { route } = useRouter();
+const Layout = ({ children }: Props) => {
+  const router = useRouter();
 
-  const routeType = getRouteType(route);
+  const { title, subtitles } = getLayoutInfo(router);
 
   const [isOpened, setIsOpened] = useState<boolean>(true);
 
@@ -57,14 +56,10 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
   return (
     <Wrapper isOpened={isOpened}>
       <Head>
-        <title>{title}</title>
+        <title>Docker Registry Web</title>
         <meta charSet='utf-8' />
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
         <link rel='preconnect' href='https://fonts.gstatic.com' />
-        {/* <link
-          href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap'
-          rel='stylesheet'
-        /> */}
         <link
           rel='icon'
           type='image/png'
@@ -73,14 +68,10 @@ const Layout = ({ children, title = 'Docker Registry Web UI' }: Props) => {
         />
       </Head>
       <div id='body'>
-        <SideBar
-          routeType={routeType}
-          isOpened={isOpened}
-          onClickFold={_handleClickFold}
-        />
+        <SideBar isOpened={isOpened} onClickFold={_handleClickFold} />
         <div id='content-wrapper'>
           <div className='wrapper'>
-            <Header routeType={routeType} />
+            <Header title={title} subtitles={subtitles} />
             <section>{children}</section>
           </div>
         </div>

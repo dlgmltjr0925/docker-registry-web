@@ -1,7 +1,7 @@
 .widget-wrapper {
   margin: 0 15px 15px 15px;
   background: #fff;
-  box-shadow: 1px 1px 3px #ccc;
+  box-shadow: 0 1px 3px #ccc;
 }
 
 .widget-wrapper .widget-header-wrapper {
@@ -49,6 +49,10 @@
   background: #36608c;
 }
 
+.widget-wrapper .button-blue:disabled {
+  background: #86a9cd;
+}
+
 .widget-wrapper .button:focus {
   outline: 0;
 }
@@ -76,7 +80,7 @@
 }
 
 .widget-wrapper .button-red:hover {
-  background: #36608c;
+  background: #b93e35;
 }
 
 .widget-wrapper .button-red:focus {

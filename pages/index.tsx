@@ -50,7 +50,7 @@ const Home = ({ ...props }) => {
         <div className='widget-header-wrapper'>
           <div className='header-title'>
             <IconConnect className='header-icon' />
-            <span>Endpoints</span>
+            <span>Registries</span>
           </div>
         </div>
         <div className='widget-row-wrapper'>
