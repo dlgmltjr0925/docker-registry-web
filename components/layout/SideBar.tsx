@@ -194,7 +194,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
     }
 
     .image-wrapper {
-      margin-top: 10px;
+      padding-top: 10px;
     }
   }
 `;

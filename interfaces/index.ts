@@ -8,7 +8,6 @@ export interface Registry {
   id: number;
   name: string;
   url: string;
-  port?: string;
   token?: string;
   images?: Image[];
   checkedDate?: string;

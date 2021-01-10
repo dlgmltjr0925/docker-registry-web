@@ -28,6 +28,11 @@ const RegistryWrapper = styled.li<RegistryWrapperProps>`
   box-shadow: 1px 1px 3px #ccc;
   border-radius: 3px;
   overflow: hidden;
+  transition: box-shadow 0.15s ease-in-out;
+
+  &:hover {
+    box-shadow: 2px 2px 5px #ccc;
+  }
 
   .item-wrapper {
     display: inline-block;

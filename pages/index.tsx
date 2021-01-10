@@ -84,7 +84,21 @@ const Home = ({ ...props }: HomeProps) => {
   );
 
   const filteredRegistries = useMemo(() => {
-    return registries;
+    const regExps = keyword
+      .trim()
+      .split(' ')
+      .map((keyword) => new RegExp(keyword));
+    return registries.filter(({ name, url, images = [] }) => {
+      for (let regExp of regExps) {
+        if (
+          regExp.test(name) ||
+          regExp.test(url) ||
+          images.findIndex(({ name }) => regExp.test(name)) !== -1
+        )
+          return true;
+      }
+      return false;
+    });
   }, [keyword, registries]);
 
   return (
@@ -106,7 +120,12 @@ const Home = ({ ...props }: HomeProps) => {
         </div>
         <div className='widget-row-wrapper search-wrapper'>
           <IconSearch className='search-icon' />
-          <input type='text' value={keyword} onChange={_handleChangeKeyword} />
+          <input
+            type='text'
+            placeholder='Search by name, url, image name...'
+            value={keyword}
+            onChange={_handleChangeKeyword}
+          />
         </div>
         <div className='widget-row-wrapper'>
           {filteredRegistries.length === 0 ? (
