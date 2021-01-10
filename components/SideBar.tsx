@@ -58,6 +58,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         padding: 4px 0 10px 5px;
         font-size: 16px;
         letter-spacing: -0.5px;
+        font-weight: 500;
       }
     }
 
@@ -141,7 +142,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         .icon {
           display: block;
           margin: auto;
-          width: 20px;
+          width: 18px;
           height: 30px;
 
           path {
@@ -172,7 +173,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         vertical-align: middle;
 
         .icon {
-          width: 20px;
+          width: 18px;
           height: 30px;
 
           path {

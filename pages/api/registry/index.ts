@@ -1,53 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import {
+  REGISTRY_FILE_PATH,
+  getRegistries,
+  getRegistyUrl,
+  response404,
+  response500,
+} from '../../../utils/api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
 import axios from 'axios';
 import fs from 'fs';
-import getConfig from 'next/config';
-import path from 'path';
-
-interface Data {
-  lastId: number;
-  list: Registry[];
-}
-
-const { serverRuntimeConfig } = getConfig();
-
-const REGISTRY_FILE_PATH = path.join(
-  serverRuntimeConfig.PROJECT_ROOT,
-  'data/registry.json'
-);
-
-const data: Data = {
-  lastId: -1,
-  list: [],
-};
-
-const getRegisty = (): Data => {
-  try {
-    if (data.lastId === -1) {
-      if (!fs.existsSync(REGISTRY_FILE_PATH)) {
-        fs.writeFileSync(
-          REGISTRY_FILE_PATH,
-          JSON.stringify({ lastId: 0, list: [] })
-        );
-      }
-
-      const registry = fs.readFileSync(REGISTRY_FILE_PATH, 'utf8');
-      const { lastId, list } = JSON.parse(registry) as Data;
-      data.lastId = lastId;
-      data.list = list;
-    }
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 const get = async (_: NextApiRequest, res: NextApiResponse) => {
   try {
-    const data = getRegisty();
+    const data = await getRegistries();
 
     res.status(200).json(data.list);
   } catch (error) {
@@ -56,20 +23,20 @@ const get = async (_: NextApiRequest, res: NextApiResponse) => {
 };
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  const data = getRegisty();
+  const data = await getRegistries();
 
   const { name, url } = req.body;
 
   const { authorization } = req.headers;
 
   try {
-    let registryUrl = `https://${url}/v2/`;
+    let registryUrl = getRegistyUrl(url);
 
     const headers: { authorization?: string } = {};
 
     if (authorization) headers.authorization = authorization;
 
-    const result = await axios.get(registryUrl, {
+    const result = await axios.get(registryUrl + '/', {
       headers,
     });
 
@@ -128,10 +95,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         await post(req, res);
         break;
       default:
-        res.status(404).end();
+        response404(res);
+        break;
     }
   } catch (error) {
-    res.status(500).json({ error });
+    response500(res);
   }
 };
 
