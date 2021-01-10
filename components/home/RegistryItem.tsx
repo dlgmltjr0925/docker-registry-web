@@ -1,7 +1,163 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const RegistryItem = () => {
-  return <div></div>;
+import IconCubes from '../../public/images/icon_cubes.svg';
+import ImageDockerRegistry from '../../public/images/image_docker_registry.svg';
+import Link from 'next/link';
+import { Registry } from '../../interfaces';
+import dateFormat from 'dateformat';
+import styled from 'styled-components';
+
+interface RegistryItemProps {
+  item: Registry;
+  checkedDate?: string;
+}
+
+const RegistryWrapper = styled.li`
+  margin: 10px 5px 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  cursor: pointer;
+  box-shadow: 1px 1px 3px #ccc;
+  border-radius: 3px;
+  overflow: hidden;
+
+  .item-wrapper {
+    display: inline-block;
+
+    .image {
+      width: 70px;
+      height: 100%;
+      vertical-align: top;
+    }
+
+    .content-wrapper {
+      display: inline-block;
+      margin-left: 10px;
+
+      .name-wrapper {
+        .name {
+          font-size: 19px;
+          font-weight: 600;
+          margin-right: 10px;
+          color: #333 !important;
+          vertical-align: middle;
+        }
+
+        .status {
+          display: inline-block;
+          color: white;
+          padding: 2px 7px 3px;
+          font-size: 10px;
+          background: #74b566;
+        }
+
+        .date {
+          margin-left: 8px;
+          color: #777;
+          font-size: 14px;
+        }
+      }
+
+      .summary-wrapper {
+        margin-top: 10px;
+
+        .url {
+          font-size: 16px;
+          font-weight: 500;
+          color: #777;
+        }
+
+        .image-wrapper {
+          font-size: 15px;
+          margin-left: 10px;
+          font-weight: 500;
+
+          svg {
+            display: inline-block;
+            width: 15px;
+            height: 100%;
+            margin-right: 10px;
+            vertical-align: top;
+          }
+
+          &::after {
+            content: ' images';
+          }
+        }
+      }
+
+      .images-wrapper {
+        margin-top: 10px;
+
+        li {
+          display: inline-block;
+          padding: 4px 7px;
+          background: #286090;
+          margin-right: 10px;
+          border-radius: 3px;
+          color: #fff;
+          font-size: 13px;
+
+          &:hover {
+            background: #1e4669;
+          }
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+`;
+
+const RegistryItem = ({ item, checkedDate }: RegistryItemProps) => {
+  const { id, name, url, images = [] } = item;
+
+  const date = useMemo(() => {
+    if (!checkedDate) return '';
+    const date = new Date(checkedDate);
+    return dateFormat(date, 'yyyy-mm-dd h:MM:ss');
+  }, [checkedDate]);
+
+  return (
+    <RegistryWrapper>
+      <Link href={`/dashboard/${id}`}>
+        <div className='item-wrapper'>
+          <ImageDockerRegistry className='image' />
+          <div className='content-wrapper'>
+            <div className='name-wrapper'>
+              <span className='name'>{name}</span>
+              <span className='status'>{'up'}</span>
+              <span className='date'>{date}</span>
+            </div>
+            <div className='summary-wrapper'>
+              <span className='url'>{url}</span>
+              <span className='image-wrapper'>
+                <IconCubes />
+                {images.length}
+              </span>
+            </div>
+            <div className='images-wrapper'>
+              <ul>
+                {images.map(({ name }) => {
+                  const url = `/image/${id}/${name}`;
+                  return (
+                    <li key={name} className=''>
+                      <Link href={url}>
+                        <span>{name}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </RegistryWrapper>
+  );
 };
 
 export default RegistryItem;

@@ -60,6 +60,7 @@ const Wrapper = styled.div<WrapperProps>`
     font-size: 85%;
     color: #f0ad4e;
     padding-bottom: 20px;
+    font-weight: 500;
 
     .icon {
       width: 10px;

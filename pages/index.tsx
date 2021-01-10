@@ -1,11 +1,10 @@
 import IconConnect from '../public/images/icon_connect.svg';
-import IconCubes from '../public/images/icon_cubes.svg';
 import IconPlus from '../public/images/icon_plus.svg';
 import IconSearch from '../public/images/icon_search.svg';
 import IconTrash from '../public/images/icon_trash.svg';
-import ImageDockerRegistry from '../public/images/image_docker_registry.svg';
 import Link from 'next/link';
 import { Registry } from '../interfaces';
+import RegistryItem from '../components/home/RegistryItem';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -51,14 +50,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const RegistryWrapper = styled.div`
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-`;
-
-const Home = ({ ...props }: HomeProps) => {
+const Home = ({ checkedDate, ...props }: HomeProps) => {
   const [registries] = useState<Registry[]>(props.registries);
 
   return (
@@ -98,45 +90,12 @@ const Home = ({ ...props }: HomeProps) => {
             <p className='empty-content'>No endpoint available</p>
           ) : (
             <ul>
-              {registries.map(({ id, name, url, images = [] }) => (
-                <li key={`${id}-${name}`}>
-                  <Link href='#'>
-                    <RegistryWrapper>
-                      <div>
-                        <ImageDockerRegistry />
-                      </div>
-                      <div>
-                        <div>
-                          <span>{name}</span>
-                          <span>{'up'}</span>
-                          {/* <span>{new Date().toString()}</span> */}
-                        </div>
-                        <div>
-                          <span>{url}</span>
-                          <span>
-                            <IconCubes />
-                            {images.length}
-                            &nbsp;images
-                          </span>
-                        </div>
-                        <div>
-                          <ul>
-                            {images.map(({ name }) => {
-                              const url = `/image/${id}/${name}`;
-                              return (
-                                <li key={name}>
-                                  <Link href={url}>
-                                    <span>{name}</span>
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </div>
-                    </RegistryWrapper>
-                  </Link>
-                </li>
+              {registries.map((registry) => (
+                <RegistryItem
+                  key={`${registry.id}`}
+                  item={registry}
+                  checkedDate={checkedDate}
+                />
               ))}
             </ul>
           )}
