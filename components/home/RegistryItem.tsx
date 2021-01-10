@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import IconCubes from '../../public/images/icon_cubes.svg';
+import IconTrash from '../../public/images/icon_trash.svg';
 import ImageDockerRegistry from '../../public/images/image_docker_registry.svg';
 import Link from 'next/link';
 import { Registry } from '../../interfaces';
@@ -10,9 +11,15 @@ import styled from 'styled-components';
 interface RegistryItemProps {
   item: Registry;
   checkedDate?: string;
+  onClickRemove: (id: number) => void;
 }
 
-const RegistryWrapper = styled.li`
+interface RegistryWrapperProps {
+  status: boolean;
+}
+
+const RegistryWrapper = styled.li<RegistryWrapperProps>`
+  position: relative;
   margin: 10px 5px 20px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -24,7 +31,6 @@ const RegistryWrapper = styled.li`
 
   .item-wrapper {
     display: inline-block;
-
     .image {
       width: 70px;
       height: 100%;
@@ -49,7 +55,8 @@ const RegistryWrapper = styled.li`
           color: white;
           padding: 2px 7px 3px;
           font-size: 10px;
-          background: #74b566;
+          border-radius: 3px;
+          background: ${({ status }) => (status ? '#74b566' : '#c95c54')};
         }
 
         .date {
@@ -110,10 +117,32 @@ const RegistryWrapper = styled.li`
       }
     }
   }
+
+  .remove-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    outline: none;
+
+    svg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        fill: #dc9690;
+      }
+
+      &:hover {
+        path {
+          fill: #c9302c;
+        }
+      }
+    }
+  }
 `;
 
-const RegistryItem = ({ item, checkedDate }: RegistryItemProps) => {
-  const { id, name, url, images = [] } = item;
+const RegistryItem = ({ item, onClickRemove }: RegistryItemProps) => {
+  const { id, name, url, images = [], status = false, checkedDate } = item;
 
   const date = useMemo(() => {
     if (!checkedDate) return '';
@@ -121,15 +150,24 @@ const RegistryItem = ({ item, checkedDate }: RegistryItemProps) => {
     return dateFormat(date, 'yyyy-mm-dd h:MM:ss');
   }, [checkedDate]);
 
+  const _handlePressRemove = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      const res = confirm(`Do you want to remove the [${name}] registry?`);
+      if (res && onClickRemove) onClickRemove(id);
+    },
+    [onClickRemove]
+  );
+
   return (
-    <RegistryWrapper>
-      <Link href={`/dashboard/${id}`}>
+    <Link href={`/dashboard/${id}`}>
+      <RegistryWrapper status={status}>
         <div className='item-wrapper'>
           <ImageDockerRegistry className='image' />
           <div className='content-wrapper'>
             <div className='name-wrapper'>
               <span className='name'>{name}</span>
-              <span className='status'>{'up'}</span>
+              <span className='status'>{status ? 'up' : 'down'}</span>
               <span className='date'>{date}</span>
             </div>
             <div className='summary-wrapper'>
@@ -155,8 +193,11 @@ const RegistryItem = ({ item, checkedDate }: RegistryItemProps) => {
             </div>
           </div>
         </div>
-      </Link>
-    </RegistryWrapper>
+        <button className='remove-button' onClick={_handlePressRemove}>
+          <IconTrash />
+        </button>
+      </RegistryWrapper>
+    </Link>
   );
 };
 

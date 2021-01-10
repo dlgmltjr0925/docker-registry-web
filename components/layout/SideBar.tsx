@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { SideTab, SideTabType } from '../../utils/router';
 
 import { ApiResult } from '../../interfaces/api';
+import { GetServerSidePropsContext } from 'next';
 import IconConnect from '../../public/images/icon_connect.svg';
 import IconCube from '../../public/images/icon_cube.svg';
 import IconCubes from '../../public/images/icon_cubes.svg';
@@ -235,7 +236,7 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
     async (id: string) => {
       try {
         const res = await axios.get<ApiResult<Registry>>(
-          `http://localhost:3000/api/registry/${id}`
+          `${window.location.origin}/api/registry/${id}`
         );
 
         if (res && res.data) {

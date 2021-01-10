@@ -30,9 +30,11 @@ export const getRegistries = async (): Promise<RegistryData> => {
   try {
     if (registryData.lastId === -1) {
       if (!fs.existsSync(REGISTRY_FILE_PATH)) {
+        registryData.lastId = 0;
         fs.writeFileSync(
           REGISTRY_FILE_PATH,
-          JSON.stringify({ lastId: 0, list: [] })
+          JSON.stringify(registryData, null, 2),
+          'utf8'
         );
       }
 
@@ -42,6 +44,38 @@ export const getRegistries = async (): Promise<RegistryData> => {
       registryData.list = list;
     }
     return registryData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addRegistry = async (
+  registry: Omit<Registry, 'id'>
+): Promise<Registry> => {
+  try {
+    const data = await getRegistries();
+    data.lastId += 1;
+    const newRegistry: Registry = {
+      id: data.lastId,
+      ...registry,
+    };
+
+    data.list.push(newRegistry);
+
+    fs.writeFileSync(REGISTRY_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    return newRegistry;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeRegistry = async (registryId: number): Promise<void> => {
+  try {
+    const data = await getRegistries();
+    data.list = data.list.filter(({ id }) => registryId !== id);
+
+    fs.writeFileSync(REGISTRY_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
   } catch (error) {
     throw error;
   }

@@ -11,4 +11,6 @@ export interface Registry {
   port?: string;
   token?: string;
   images?: Image[];
+  checkedDate?: string;
+  status?: boolean;
 }

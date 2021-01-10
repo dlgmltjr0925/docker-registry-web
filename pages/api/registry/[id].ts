@@ -3,6 +3,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import {
   getRegistries,
   getRegistyUrl,
+  removeRegistry,
   response400,
   response404,
   response500,
@@ -49,11 +50,35 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
+const del = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { id } = req.query;
+
+    if (!id || Array.isArray(id)) return response400(res);
+
+    const registryId = parseInt(id, 10);
+    await removeRegistry(registryId);
+
+    const result: ApiResult = {
+      status: 200,
+      message: 'success',
+      data: {},
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    throw error;
+  }
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case 'GET':
-        get(req, res);
+        await get(req, res);
+        break;
+      case 'DELETE':
+        await del(req, res);
         break;
       default:
         response404(res);

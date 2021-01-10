@@ -1,13 +1,13 @@
+import { useCallback, useMemo, useState } from 'react';
+
 import IconConnect from '../public/images/icon_connect.svg';
 import IconPlus from '../public/images/icon_plus.svg';
 import IconSearch from '../public/images/icon_search.svg';
-import IconTrash from '../public/images/icon_trash.svg';
 import Link from 'next/link';
 import { Registry } from '../interfaces';
 import RegistryItem from '../components/home/RegistryItem';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useState } from 'react';
 
 interface HomeProps {
   registries: Registry[];
@@ -50,8 +50,42 @@ const Wrapper = styled.div`
   }
 `;
 
-const Home = ({ checkedDate, ...props }: HomeProps) => {
-  const [registries] = useState<Registry[]>(props.registries);
+const Home = ({ ...props }: HomeProps) => {
+  const [registries, setRegistries] = useState<Registry[]>(props.registries);
+  const [keyword, setKeyword] = useState<string>('');
+
+  const _handleChangeKeyword = useCallback(
+    ({ target: { value } }) => {
+      setKeyword(value);
+    },
+    [setKeyword]
+  );
+
+  const _handleClickRemoveRegistry = useCallback(
+    async (registryId: number) => {
+      try {
+        const res = await axios.delete(
+          `${window.location.origin}/api/registry/${registryId}`
+        );
+
+        if (res && res.data) {
+          const { status, message } = res.data;
+          if (status === 200) {
+            setRegistries(registries.filter(({ id }) => registryId !== id));
+          } else {
+            alert(message);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [registries, setRegistries]
+  );
+
+  const filteredRegistries = useMemo(() => {
+    return registries;
+  }, [keyword, registries]);
 
   return (
     <Wrapper>
@@ -72,10 +106,10 @@ const Home = ({ checkedDate, ...props }: HomeProps) => {
         </div>
         <div className='widget-row-wrapper search-wrapper'>
           <IconSearch className='search-icon' />
-          <input type='text' />
+          <input type='text' value={keyword} onChange={_handleChangeKeyword} />
         </div>
         <div className='widget-row-wrapper'>
-          {registries.length === 0 ? (
+          {filteredRegistries.length === 0 ? (
             <p className='empty-content'>No endpoint available</p>
           ) : (
             <ul>
@@ -83,7 +117,7 @@ const Home = ({ checkedDate, ...props }: HomeProps) => {
                 <RegistryItem
                   key={`${registry.id}`}
                   item={registry}
-                  checkedDate={checkedDate}
+                  onClickRemove={_handleClickRemoveRegistry}
                 />
               ))}
             </ul>
@@ -108,8 +142,6 @@ export const getServerSideProps = async () => {
     }
   } catch (error) {
     console.log(error);
-  } finally {
-    props.checkedDate = new Date().toString();
   }
 
   return {

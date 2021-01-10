@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
-import { getRegistries, getRegistyUrl } from '../../../utils/api';
+import { getRegistries, getRegistyUrl, response400 } from '../../../utils/api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
@@ -8,33 +8,48 @@ import { promiseAll } from '../../../utils/async';
 
 const get = async (_: NextApiRequest, res: NextApiResponse) => {
   try {
-    const data = await getRegistries();
+    const { list } = await getRegistries();
+    const checkedDate = new Date().toString();
 
-    await promiseAll(
-      data.list.map(async ({ url, token }, index) => {
+    const registries = (await promiseAll(
+      list.map(async (registry) => {
+        const { url, token } = registry;
         try {
           const registryUrl = getRegistyUrl(url, '/_catalog');
           const config: AxiosRequestConfig = { headers: {} };
           if (token) config.headers['Authorization'] = `Basic ${token}`;
 
-          const res = await axios.get(registryUrl, config);
+          const res = await axios.get<{ repositories: string[] }>(
+            registryUrl,
+            config
+          );
 
           if (res && res.data) {
             const { repositories } = res.data;
-            data.list[index].images = repositories.map((name: string) => ({
+            const images = repositories.map((name: string) => ({
               name,
             }));
+            return {
+              ...registry,
+              images,
+              checkedDate,
+              status: true,
+            };
           }
         } catch (error) {
-          console.log(error);
+          return {
+            ...registry,
+            checkedDate,
+            status: false,
+          };
         }
       })
-    );
+    )) as Registry[];
 
     const result: ApiResult<{ registries: Registry[] }> = {
       status: 200,
       message: 'success',
-      data: { registries: data.list },
+      data: { registries },
     };
 
     res.status(200).json(result);
@@ -50,12 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         await get(req, res);
         break;
       default:
-        const result: ApiResult = {
-          status: 404,
-          message: 'Not Found',
-          data: {},
-        };
-        res.status(200).json(result);
+        response400(res);
         break;
     }
   } catch (error) {

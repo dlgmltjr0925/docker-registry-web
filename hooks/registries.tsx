@@ -33,6 +33,7 @@ export const useAddRegistry = () => {
 
       return await axios.post('/api/registry', { name, url }, config);
     } catch (error) {
+      setIsUploading(false);
       throw error;
     } finally {
       setIsUploading(false);

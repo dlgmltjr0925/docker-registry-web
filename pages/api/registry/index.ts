@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
-  REGISTRY_FILE_PATH,
+  addRegistry,
   getRegistries,
   getRegistyUrl,
   response404,
@@ -10,22 +10,8 @@ import {
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
 import axios from 'axios';
-import fs from 'fs';
-
-const get = async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    console.log(req);
-    const data = await getRegistries();
-
-    res.status(200).json(data.list);
-  } catch (error) {
-    throw error;
-  }
-};
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  const data = await getRegistries();
-
   const { name, url } = req.body;
 
   const { authorization } = req.headers;
@@ -42,21 +28,15 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (result && result.status === 200) {
-      const registry: Registry = { id: ++data.lastId, name, url };
+      const registry: Omit<Registry, 'id'> = { name, url };
       if (authorization) registry.token = authorization.split(' ')[1];
 
-      data.list.push(registry);
-
-      fs.writeFileSync(
-        REGISTRY_FILE_PATH,
-        JSON.stringify(data, null, 2),
-        'utf8'
-      );
+      const newRegistry = await addRegistry(registry);
 
       const result: ApiResult<Registry> = {
         status: 200,
         message: 'success',
-        data: registry,
+        data: newRegistry,
       };
 
       res.status(200).json(result);
