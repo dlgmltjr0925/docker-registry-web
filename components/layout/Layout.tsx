@@ -5,6 +5,7 @@ import Header from './Header';
 import SideBar from './SideBar';
 import { getLayoutInfo } from '../../utils/router';
 import styled from 'styled-components';
+import { useRegistry } from '../../contexts/RegistryContext';
 import { useRouter } from 'next/router';
 
 type Props = {

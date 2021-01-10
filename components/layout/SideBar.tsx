@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SideTab, SideTabType } from '../../utils/router';
 
+import { ApiResult } from '../../interfaces/api';
 import IconConnect from '../../public/images/icon_connect.svg';
 import IconCube from '../../public/images/icon_cube.svg';
 import IconCubes from '../../public/images/icon_cubes.svg';
@@ -9,7 +10,10 @@ import IconExchange from '../../public/images/icon_exchange.svg';
 import IconHome from '../../public/images/icon_home.svg';
 import IconTags from '../../public/images/icon_tags.svg';
 import Link from 'next/link';
+import { Registry } from '../../interfaces';
+import axios from 'axios';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 interface SideBarProps {
   isOpened: boolean;
@@ -123,7 +127,6 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
 
       span {
         font-size: 13px;
-        text-transform: capitalize;
         line-height: 30px;
         margin-left: 20px;
 
@@ -186,8 +189,11 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         font-size: 12px;
         line-height: 26px;
         font-weight: bold;
-        text-transform: uppercase;
       }
+    }
+
+    .image-wrapper {
+      margin-top: 10px;
     }
   }
 `;
@@ -215,12 +221,42 @@ const getActiveClass = ({
 };
 
 const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
+  const [registry, setRegistry] = useState<Registry | null>(null);
+  const { query } = useRouter();
+
   const _getActiveClass = useCallback(
     (args: Omit<getActiveClassArgs, 'tabs'>) => {
       return getActiveClass({ ...args, tabs });
     },
     [tabs]
   );
+
+  const _getRegistry = useCallback(
+    async (id: string) => {
+      try {
+        const res = await axios.get<ApiResult<Registry>>(
+          `http://localhost:3000/api/registry/${id}`
+        );
+
+        if (res && res.data) {
+          const { status, message, data } = res.data;
+          if (status === 200) setRegistry(data);
+          else alert(message);
+        }
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [setRegistry]
+  );
+
+  useEffect(() => {
+    const registryId = query.id as string | undefined;
+    if (registryId && (!registry || `${registry.id}` !== registryId)) {
+      _getRegistry(registryId);
+    }
+  }, [query.id]);
 
   return (
     <SideBarWrapper isOpened={isOpened}>
@@ -253,74 +289,81 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
           </div>
         </Link>
         {/* 연결된 레지스트리 */}
-        <div className='connect-wrapper'>
-          <div className='icon-wrapper'>
-            <IconConnect className='icon' />
-          </div>
-          <span>server-name</span>
-        </div>
-        <Link href='/dashboard/1'>
-          <div
-            className={`side-element${_getActiveClass({ type: 'dashboard' })}`}
-          >
-            <span>Dashboard</span>
-            <div className='icon-wrapper'>
-              <IconDashboard className='icon' />
-            </div>
-          </div>
-        </Link>
-        <Link href='/images/1'>
-          <div className={`side-element${_getActiveClass({ type: 'images' })}`}>
-            <span>Images</span>
-            <div className='icon-wrapper'>
-              <IconCubes className='icon' />
-            </div>
-          </div>
-        </Link>
-        <Link href='/image/1/arm64v8'>
-          <div
-            className={`side-element${_getActiveClass({
-              type: 'image',
-              options: { name: 'arm64v8' },
-            })}`}
-          >
-            <span>arm64v8</span>
-            <div className='icon-wrapper'>
-              <IconCube className='icon' />
-            </div>
-          </div>
-        </Link>
-        <Link href='/tags/1/arm64v8'>
-          <div
-            className={`side-element${_getActiveClass({
-              type: 'tags',
-              options: { name: 'arm64v8' },
-            })}`}
-          >
-            <span className='sub'>tags</span>
-            <div className='icon-wrapper'>
-              <IconTags className='icon' />
-            </div>
-          </div>
-        </Link>
-        <div className='side-element'>
-          <span>nginx</span>
-          <div className='icon-wrapper'>
-            <IconCube className='icon' />
-          </div>
-        </div>
-        <div className='side-element'>
-          <span>kafka</span>
-          <div className='icon-wrapper'>
-            <IconCube className='icon' />
-          </div>
-        </div>
-        <div className='side-element'>
-          <span>mysql</span>
-          <div className='icon-wrapper'>
-            <IconCube className='icon' />
-          </div>
-        </div>
+        {registry !== null && (
+          <>
+            {isOpened && (
+              <div className='connect-wrapper'>
+                <div className='icon-wrapper'>
+                  <IconConnect className='icon' />
+                </div>
+                <span>{registry.name}</span>
+              </div>
+            )}
+            <Link href={`/dashboard/${registry.id}`}>
+              <div
+                className={`side-element${_getActiveClass({
+                  type: 'dashboard',
+                })}`}
+              >
+                <span>Dashboard</span>
+                <div className='icon-wrapper'>
+                  <IconDashboard className='icon' />
+                </div>
+              </div>
+            </Link>
+            <Link href={`/images/${registry.id}`}>
+              <div
+                className={`side-element${_getActiveClass({ type: 'images' })}`}
+              >
+                <span>Images</span>
+                <div className='icon-wrapper'>
+                  <IconCubes className='icon' />
+                </div>
+              </div>
+            </Link>
+            <ul className='image-wrapper'>
+              {registry.images?.map(({ name }) => {
+                const visible =
+                  _getActiveClass({
+                    type: 'image',
+                    options: { name },
+                  }) !== '';
+                return (
+                  <li key={name}>
+                    <Link href={`/image/${registry.id}/${name}`}>
+                      <div
+                        className={`side-element${_getActiveClass({
+                          type: 'image',
+                          options: { name },
+                        })}`}
+                      >
+                        <span>{name}</span>
+                        <div className='icon-wrapper'>
+                          <IconCube className='icon' />
+                        </div>
+                      </div>
+                    </Link>
+                    {visible && (
+                      <Link href={`/tags/${registry.id}/${name}`}>
+                        <div
+                          className={`side-element${_getActiveClass({
+                            type: 'tags',
+                            options: { name },
+                          })}`}
+                        >
+                          <span className='sub'>tags</span>
+                          <div className='icon-wrapper'>
+                            <IconTags className='icon' />
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
       </div>
     </SideBarWrapper>
   );

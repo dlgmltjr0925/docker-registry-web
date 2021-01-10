@@ -47,6 +47,15 @@ export const getRegistries = async (): Promise<RegistryData> => {
   }
 };
 
+export const response400 = (res: NextApiResponse) => {
+  const result: ApiResult = {
+    status: 400,
+    message: 'Bad Request',
+    data: {},
+  };
+  res.status(200).json(result);
+};
+
 export const response404 = (res: NextApiResponse) => {
   const result: ApiResult = {
     status: 404,

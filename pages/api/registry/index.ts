@@ -12,8 +12,9 @@ import { Registry } from '../../../interfaces';
 import axios from 'axios';
 import fs from 'fs';
 
-const get = async (_: NextApiRequest, res: NextApiResponse) => {
+const get = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    console.log(req);
     const data = await getRegistries();
 
     res.status(200).json(data.list);
@@ -88,9 +89,6 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
-      case 'GET':
-        await get(req, res);
-        break;
       case 'POST':
         await post(req, res);
         break;
