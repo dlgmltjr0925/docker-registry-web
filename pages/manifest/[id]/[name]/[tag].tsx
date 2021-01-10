@@ -8,7 +8,6 @@ const Wrapper = styled.div<WrapperProps>``;
 
 const Manifest = () => {
   const router = useRouter();
-  console.log('tag', router);
 
   return (
     <Wrapper>

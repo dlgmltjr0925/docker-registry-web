@@ -243,7 +243,6 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
           if (status === 200) setRegistry(data);
           else alert(message);
         }
-        console.log(res);
       } catch (error) {
         console.log(error);
       }

@@ -63,17 +63,6 @@ const Home = ({ checkedDate, ...props }: HomeProps) => {
           </div>
         </div>
         <div className='widget-row-wrapper'>
-          <button
-            disabled
-            className='button button-red'
-            type='button'
-            onClick={() => {
-              console.log('onClick');
-            }}
-          >
-            <IconTrash className='button-icon' />
-            Remove
-          </button>
           <Link href='/registries/new'>
             <button className='button button-blue' type='button'>
               <IconPlus className='button-icon' />

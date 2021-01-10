@@ -9,8 +9,6 @@ const Wrapper = styled.div<WrapperProps>``;
 const Images = () => {
   const router = useRouter();
 
-  console.log(router.query);
-
   return (
     <Wrapper>
       <div>{router.query.id}</div>

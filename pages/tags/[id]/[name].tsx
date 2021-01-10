@@ -9,7 +9,6 @@ const Wrapper = styled.div<WrapperProps>``;
 
 const Tags = () => {
   const router = useRouter();
-  console.log('tag', router);
 
   return (
     <Wrapper>
