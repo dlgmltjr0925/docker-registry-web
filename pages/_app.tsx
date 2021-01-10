@@ -2,7 +2,7 @@ import '../styles/global.css';
 import '../styles/font.css';
 import '../styles/widget.css';
 
-import Layout from '../components/Layout';
+import Layout from '../components/layout/Layout';
 import React from 'react';
 
 interface Props {

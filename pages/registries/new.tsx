@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import IconWarning from '../../public/images/icon_warning.svg';
-import Switch from '../../components/Switch';
+import Switch from '../../components/common/Switch';
 import styled from 'styled-components';
 import { useAddRegistry } from '../../hooks/registries';
 import { useRouter } from 'next/router';

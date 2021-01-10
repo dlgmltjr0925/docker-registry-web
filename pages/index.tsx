@@ -59,7 +59,6 @@ const RegistryWrapper = styled.div`
 `;
 
 const Home = ({ ...props }: HomeProps) => {
-  console.log('home');
   const [registries] = useState<Registry[]>(props.registries);
 
   return (
@@ -148,7 +147,6 @@ const Home = ({ ...props }: HomeProps) => {
 };
 
 export const getServerSideProps = async () => {
-  console.log('getServerSideProps');
   const props: Partial<HomeProps> = {
     registries: [],
   };
@@ -165,8 +163,6 @@ export const getServerSideProps = async () => {
   } finally {
     props.checkedDate = new Date().toString();
   }
-
-  console.log('getServerSideProps', 'end');
 
   return {
     props,

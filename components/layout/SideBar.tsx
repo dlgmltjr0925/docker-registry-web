@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
-import { SideTab, SideTabType } from '../utils/router';
+import { SideTab, SideTabType } from '../../utils/router';
 
-import IconConnect from '../public/images/icon_connect.svg';
-import IconCube from '../public/images/icon_cube.svg';
-import IconCubes from '../public/images/icon_cubes.svg';
-import IconDashboard from '../public/images/icon_dashboard.svg';
-import IconExchange from '../public/images/icon_exchange.svg';
-import IconHome from '../public/images/icon_home.svg';
-import IconTags from '../public/images/icon_tags.svg';
+import IconConnect from '../../public/images/icon_connect.svg';
+import IconCube from '../../public/images/icon_cube.svg';
+import IconCubes from '../../public/images/icon_cubes.svg';
+import IconDashboard from '../../public/images/icon_dashboard.svg';
+import IconExchange from '../../public/images/icon_exchange.svg';
+import IconHome from '../../public/images/icon_home.svg';
+import IconTags from '../../public/images/icon_tags.svg';
 import Link from 'next/link';
 import styled from 'styled-components';
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import Link from 'next/link';
-import { Subtitle } from '../utils/router';
+import { Subtitle } from '../../utils/router';
 import styled from 'styled-components';
 
 interface HeaderProps {

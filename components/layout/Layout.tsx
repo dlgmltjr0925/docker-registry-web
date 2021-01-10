@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import SideBar from './SideBar';
-import { getLayoutInfo } from '../utils/router';
+import { getLayoutInfo } from '../../utils/router';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
