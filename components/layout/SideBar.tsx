@@ -118,7 +118,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       &.active {
         border-left: 3px solid #fff;
         color: #fff;
-        font-weight: bold;
+        font-weight: 600;
         background: #2f3f60;
 
         .icon-wrapper .icon path {
@@ -127,7 +127,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       }
 
       span {
-        font-size: 13px;
+        font-size: 15px;
         line-height: 30px;
         margin-left: 20px;
 

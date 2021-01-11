@@ -15,6 +15,10 @@ interface LayoutInfo {
   sideTabs: SideTab[];
 }
 
+const getName = (names: string | string[]) => {
+  return Array.isArray(names) ? names.join('/') : names;
+};
+
 export const getLayoutInfo = ({
   route,
   query = {},
@@ -25,7 +29,8 @@ export const getLayoutInfo = ({
     sideTabs: [],
   };
 
-  const { id, name, tag } = query;
+  const { id, names, tags } = query;
+  let name;
 
   switch (route) {
     case '/':
@@ -51,7 +56,9 @@ export const getLayoutInfo = ({
       layoutInfo.subtitles = [{ name: 'Image List' }];
       layoutInfo.sideTabs = [{ type: 'images' }];
       break;
-    case '/image/[id]/[name]':
+    case '/image/[id]/[...names]':
+      name = getName(names);
+
       layoutInfo.title = 'Image';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
@@ -59,7 +66,9 @@ export const getLayoutInfo = ({
       ];
       layoutInfo.sideTabs = [{ type: 'image', options: { name } }];
       break;
-    case '/tags/[id]/[name]':
+    case '/tags/[id]/[...names]':
+      name = getName(names);
+
       layoutInfo.title = 'Tags';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
@@ -71,7 +80,10 @@ export const getLayoutInfo = ({
         { type: 'tags', options: { name } },
       ];
       break;
-    case '/manifest/[id]/[name]/[tag]':
+    case '/manifest/[id]/[...tags]': {
+      const tag = (tags as string[]).pop();
+      const name = getName(names);
+
       layoutInfo.title = 'Manifest';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
@@ -84,6 +96,7 @@ export const getLayoutInfo = ({
         { type: 'tags', options: { name } },
       ];
       break;
+    }
   }
 
   return layoutInfo;

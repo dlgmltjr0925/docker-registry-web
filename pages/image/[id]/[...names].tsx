@@ -1,25 +1,22 @@
-import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+interface ImageProps {}
 
 interface WrapperProps {}
 
 const Wrapper = styled.div<WrapperProps>``;
 
-const Tags = () => {
+const Image = (props: ImageProps) => {
   const router = useRouter();
 
   return (
     <Wrapper>
-      <p>{router.query.id}</p>
-      <p>{router.query.name}</p>
-      <div>Tags</div>
-      <Link href='/manifest/1/arm64v8/tag'>
-        <span>tag</span>
-      </Link>
+      <div>{router.query.id}</div>
+      <div>image</div>
     </Wrapper>
   );
 };
 
-export default Tags;
+export default Image;
