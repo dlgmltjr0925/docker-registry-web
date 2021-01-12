@@ -81,6 +81,7 @@ export const getLayoutInfo = ({
       ];
       break;
     case '/manifest/[id]/[...tags]': {
+      if (!tags) break;
       const tag = (tags as string[]).pop();
       const name = getName(names);
 

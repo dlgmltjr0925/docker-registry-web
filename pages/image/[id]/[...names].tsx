@@ -8,7 +8,7 @@ interface WrapperProps {}
 
 const Wrapper = styled.div<WrapperProps>``;
 
-const Image = (props: ImageProps) => {
+const Image = ({}: ImageProps) => {
   const router = useRouter();
 
   return (

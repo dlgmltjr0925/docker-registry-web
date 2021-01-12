@@ -3,74 +3,85 @@ import path from 'path';
 import sqlite3 from 'sqlite3';
 
 const { serverRuntimeConfig } = getConfig();
-export const REGISTRY_FILE_PATH = path.join(
+export const DB_FILE_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
   'data/docker-registry-ui.db'
 );
 
 const { Database } = sqlite3.verbose();
 
-const db = new Database(REGISTRY_FILE_PATH);
-
 export const initialize = () => {
-  /**
-   * create registry table
-   * CREATE TABLE "registry" (
-   *   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-   *   "name"	TEXT NOT NULL,
-   *   "url"	TEXT NOT NULL,
-   *   "token"	INTEGER
-   * );
-   */
   try {
-    db.run(`
-    CREATE TABLE "registry" (
-      "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-      "name"	TEXT NOT NULL,
-      "url"	TEXT NOT NULL,
-      "token"	INTEGER,
-      "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "deleted_at"	TEXT
-    );
-    `);
-
-    db.run(`
-    CREATE TABLE "image" (
-      "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-      "registry_id"	INTEGER NOT NULL,
-      "name"	TEXT NOT NULL,
-      "alias"	TEXT,
-      "summary"	TEXT,
-      "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "deleted_at"	TEXT
-    );
-    `);
-
-    db.run(`
-    CREATE TABLE "tag_hash" (
-      "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-      "hash"	TEXT NOT NULL,
-      "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "deleted_at"	TEXT
-    );
-    `);
-
-    db.run(`
-    CREATE TABLE "tag" (
-      "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-      "image_id"	INTEGER NOT NULL,
-      "tag_hash_id"	INTEGER NOT NULL,
-      "tag"	INTEGER,
-      "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "deleted_at"	TEXT
-    );
-    `);
+    const db = new Database(DB_FILE_PATH);
+    db.serialize(() => {
+      db.all(`SELECT tbl_name FROM sqlite_master;`, (err, rows) => {
+        if (err) throw err;
+        const tables = rows.map(({ tbl_name }) => tbl_name);
+        if (!tables.includes('registry')) {
+          db.run(`
+            CREATE TABLE "registry" (
+              "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+              "name"	TEXT NOT NULL,
+              "url"	TEXT NOT NULL,
+              "token"	INTEGER,
+              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              "deleted_at"	TEXT
+            );
+          `);
+        }
+        if (!tables.includes('image')) {
+          db.run(`
+            CREATE TABLE "image" (
+              "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+              "registry_id"	INTEGER NOT NULL,
+              "name"	TEXT NOT NULL,
+              "alias"	TEXT,
+              "summary"	TEXT,
+              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              "deleted_at"	TEXT
+            );
+          `);
+        }
+        if (!tables.includes('tag_hash')) {
+          db.run(`
+            CREATE TABLE "tag_hash" (
+              "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+              "hash"	TEXT NOT NULL,
+              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              "deleted_at"	TEXT
+            );
+          `);
+        }
+        if (!tables.includes('tag')) {
+          db.run(`
+          CREATE TABLE "tag" (
+            "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+            "image_id"	INTEGER NOT NULL,
+            "tag_hash_id"	INTEGER NOT NULL,
+            "tag"	INTEGER,
+            "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "deleted_at"	TEXT
+          );
+        `);
+        }
+        db.close();
+      });
+    });
   } catch (error) {
     console.log(error);
-  } finally {
-    db.close();
   }
+};
+
+export const getRegistries = () => {
+  return new Promise((resolve, reject) => {
+    const db = new Database(DB_FILE_PATH);
+    db.all(`SELECT * FROM registry;`, (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+    db.close();
+  });
 };

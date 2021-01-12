@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { initialize } from '../../utils/database';
+import { getRegistries } from '../../utils/database';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (_: NextApiRequest, res: NextApiResponse) => {
   try {
     console.log('called /api/db');
-    initialize();
+    const registries = await getRegistries();
+    res.status(200).json(registries);
   } catch (error) {
     throw error;
   }

@@ -2,8 +2,10 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
+    "prepare": "./scripts/prepare.sh",
     "dev": "next",
     "build": "next build",
+    "prestart": "yarn prepare",
     "start": "next start",
     "tsc": "tsc"
   },
