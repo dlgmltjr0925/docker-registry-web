@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
   addRegistry,
-  getRegistries,
   getRegistyUrl,
   response404,
   response500,

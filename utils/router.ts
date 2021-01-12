@@ -62,7 +62,7 @@ export const getLayoutInfo = ({
       layoutInfo.title = 'Image';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
-        { name: 'Image', url: `/image/${id}/${name}` },
+        { name, url: `/image/${id}/${name}` },
       ];
       layoutInfo.sideTabs = [{ type: 'image', options: { name } }];
       break;
@@ -72,7 +72,7 @@ export const getLayoutInfo = ({
       layoutInfo.title = 'Tags';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
-        { name: name as string, url: `/image/${id}/${name}` },
+        { name, url: `/image/${id}/${name}` },
         { name: 'Tags', url: `/tags/${id}/${name}` },
       ];
       layoutInfo.sideTabs = [
@@ -87,7 +87,7 @@ export const getLayoutInfo = ({
       layoutInfo.title = 'Manifest';
       layoutInfo.subtitles = [
         { name: 'Images', url: `/images/${id}` },
-        { name: name as string, url: `/image/${id}/${name}` },
+        { name, url: `/image/${id}/${name}` },
         { name: 'Tags', url: `/tags/${id}/${name}` },
         { name: tag as string, url: `/manifest/${id}/${name}` },
       ];
