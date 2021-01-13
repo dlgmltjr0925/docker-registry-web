@@ -1,18 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
-import { getRegistries, getRegistyUrl, response400 } from '../../../utils/api';
+import { getRegistyUrl, response400 } from '../../../utils/api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
 import { promiseAll } from '../../../utils/async';
+import { selectRegistries } from '../../../utils/database';
 
 const get = async (_: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { list } = await getRegistries();
+    const rows = await selectRegistries();
+
     const checkedDate = new Date().toString();
 
     const registries = (await promiseAll(
-      list.map(async (registry) => {
+      rows.map(async (registry) => {
         const { url, token } = registry;
         try {
           const registryUrl = getRegistyUrl(url, '/_catalog');

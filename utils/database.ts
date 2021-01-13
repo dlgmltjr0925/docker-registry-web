@@ -1,3 +1,5 @@
+import { Registry } from '../interfaces';
+import dateFormat from 'dateformat';
 import getConfig from 'next/config';
 import path from 'path';
 import sqlite3 from 'sqlite3';
@@ -10,75 +12,69 @@ export const DB_FILE_PATH = path.join(
 
 const { Database } = sqlite3.verbose();
 
-export const initialize = () => {
-  try {
+type InsertRegistryArgs = Omit<Registry, 'id'>;
+export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
+  return new Promise<Registry>((resolve, reject) => {
     const db = new Database(DB_FILE_PATH);
-    db.serialize(() => {
-      db.all(`SELECT tbl_name FROM sqlite_master;`, (err, rows) => {
-        if (err) throw err;
-        const tables = rows.map(({ tbl_name }) => tbl_name);
-        if (!tables.includes('registry')) {
-          db.run(`
-            CREATE TABLE "registry" (
-              "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-              "name"	TEXT NOT NULL,
-              "url"	TEXT NOT NULL,
-              "token"	INTEGER,
-              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              "deleted_at"	TEXT
-            );
-          `);
+    db.run(
+      'INSERT INTO registry (name, url, token) VALUES (?, ?, ?)',
+      [name, url, token || null],
+      (err) => {
+        if (err) reject(err);
+      }
+    );
+    db.get(
+      'SELECT id FROM registry WHERE name=? AND url=? AND token=? ORDER BY id DESC;',
+      [name, url, token || null],
+      (err, row) => {
+        if (err) reject(err);
+        if (row) {
+          resolve({
+            id: row.id,
+            name,
+            url,
+            token,
+          });
         }
-        if (!tables.includes('image')) {
-          db.run(`
-            CREATE TABLE "image" (
-              "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-              "registry_id"	INTEGER NOT NULL,
-              "name"	TEXT NOT NULL,
-              "alias"	TEXT,
-              "summary"	TEXT,
-              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              "deleted_at"	TEXT
-            );
-          `);
-        }
-        if (!tables.includes('tag_hash')) {
-          db.run(`
-            CREATE TABLE "tag_hash" (
-              "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-              "hash"	TEXT NOT NULL,
-              "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              "deleted_at"	TEXT
-            );
-          `);
-        }
-        if (!tables.includes('tag')) {
-          db.run(`
-          CREATE TABLE "tag" (
-            "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-            "image_id"	INTEGER NOT NULL,
-            "tag_hash_id"	INTEGER NOT NULL,
-            "tag"	INTEGER,
-            "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            "deleted_at"	TEXT
-          );
-        `);
-        }
-        db.close();
-      });
-    });
-  } catch (error) {
-    console.log(error);
-  }
+      }
+    );
+    db.close();
+  });
 };
 
-export const getRegistries = () => {
-  return new Promise((resolve, reject) => {
+export const selectRegistryById = (id: number) => {
+  return new Promise<Registry>((resolve, reject) => {
     const db = new Database(DB_FILE_PATH);
-    db.all(`SELECT * FROM registry;`, (err, rows) => {
+    db.get('SELECT * FROM registry WHERE id=?;', [id], (err, row) => {
+      if (err) reject(err);
+      if (row) {
+        resolve(row);
+      }
+    });
+    db.close();
+  });
+};
+
+export const deleteRegistry = (id: number) => {
+  return new Promise<boolean>((resolve, reject) => {
+    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+    const db = new Database(DB_FILE_PATH);
+    db.run(
+      'UPDATE registry SET updated_at=?, deleted_at=? WHERE id=?',
+      [now, now, id],
+      (err) => {
+        if (err) reject(err);
+        resolve(true);
+      }
+    );
+    db.close();
+  });
+};
+
+export const selectRegistries = () => {
+  return new Promise<Registry[]>((resolve, reject) => {
+    const db = new Database(DB_FILE_PATH);
+    db.all(`SELECT * FROM registry WHERE deleted_at IS NULL;`, (err, rows) => {
       if (err) reject(err);
       resolve(rows);
     });

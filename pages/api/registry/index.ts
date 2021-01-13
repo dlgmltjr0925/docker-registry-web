@@ -1,14 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  addRegistry,
-  getRegistyUrl,
-  response404,
-  response500,
-} from '../../../utils/api';
+import { getRegistyUrl, response404, response500 } from '../../../utils/api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
 import axios from 'axios';
+import { insertRegistry } from '../../../utils/database';
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const { name, url } = req.body;
@@ -30,7 +26,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
       const registry: Omit<Registry, 'id'> = { name, url };
       if (authorization) registry.token = authorization.split(' ')[1];
 
-      const newRegistry = await addRegistry(registry);
+      const newRegistry = await insertRegistry(registry);
 
       const result: ApiResult<Registry> = {
         status: 200,

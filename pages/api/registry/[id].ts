@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
+import { deleteRegistry, selectRegistryById } from '../../../utils/database';
 import {
-  getRegistries,
   getRegistyUrl,
-  removeRegistry,
   response400,
   response404,
   response500,
@@ -19,8 +18,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!id || Array.isArray(id)) return response400(res);
 
     const registryId = parseInt(id, 10);
-    const data = await getRegistries();
-    const registry = data.list.find(({ id }) => registryId === id);
+    const registry = await selectRegistryById(registryId);
 
     if (!registry) return response404(res);
 
@@ -57,7 +55,7 @@ const del = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!id || Array.isArray(id)) return response400(res);
 
     const registryId = parseInt(id, 10);
-    await removeRegistry(registryId);
+    await deleteRegistry(registryId);
 
     const result: ApiResult = {
       status: 200,
