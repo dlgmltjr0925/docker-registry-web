@@ -25,7 +25,11 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     const result: ApiResult<Registry> = {
       status: 200,
       message: 'sucess',
-      data: { ...registry },
+      data: {
+        ...registry,
+        checkedDate: new Date().toString(),
+        status: false,
+      },
     };
 
     const { url, token } = registry;
@@ -40,6 +44,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
       result.data.images = repositories.map((name: string) => ({
         name,
       }));
+      result.data.status = true;
     }
 
     res.status(200).json(result);
