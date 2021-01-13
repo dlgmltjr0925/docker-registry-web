@@ -24,7 +24,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const result: ApiResult<Registry> = {
       status: 200,
-      message: 'sucess',
+      message: 'success',
       data: {
         ...registry,
         checkedDate: new Date().toString(),

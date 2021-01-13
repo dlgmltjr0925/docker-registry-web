@@ -84,21 +84,26 @@ const Home = ({ ...props }: HomeProps) => {
   );
 
   const filteredRegistries = useMemo(() => {
-    const regExps = keyword
-      .trim()
-      .split(' ')
-      .map((keyword) => new RegExp(keyword));
-    return registries.filter(({ name, url, images = [] }) => {
-      for (let regExp of regExps) {
-        if (
-          regExp.test(name) ||
-          regExp.test(url) ||
-          images.findIndex(({ name }) => regExp.test(name)) !== -1
-        )
-          return true;
-      }
-      return false;
-    });
+    if (keyword.trim() === '') return registries;
+    try {
+      const regExps = keyword
+        .trim()
+        .split(' ')
+        .map((keyword) => new RegExp(keyword));
+      return registries.filter(({ name, url, images = [] }) => {
+        for (let regExp of regExps) {
+          if (
+            regExp.test(name) ||
+            regExp.test(url) ||
+            images.findIndex(({ name }) => regExp.test(name)) !== -1
+          )
+            return true;
+        }
+        return false;
+      });
+    } catch (error) {
+      return registries;
+    }
   }, [keyword, registries]);
 
   return (
