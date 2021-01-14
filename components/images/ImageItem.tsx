@@ -142,8 +142,6 @@ const ImageWrapper = styled.li<ImageWrapperProps>`
 const RegistryItem = ({ item, onClickRemove }: ImageItemProps) => {
   const { registryId, name, tags = [] } = item;
 
-  console.log(tags);
-
   const _handlePressRemove = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();

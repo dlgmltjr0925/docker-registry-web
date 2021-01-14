@@ -100,7 +100,6 @@ const Images = ({ registry, ...props }: ImagesProps) => {
             const newTags = { ...tags };
             newTags[name] = newTags[name].filter((tag) => !data.includes(tag));
             setTags(newTags);
-            console.log('here', data, newTags);
           } else {
             alert(message);
           }
