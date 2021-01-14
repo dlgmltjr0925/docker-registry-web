@@ -100,6 +100,9 @@ const Images = ({ registry, ...props }: ImagesProps) => {
             const newTags = { ...tags };
             newTags[name] = newTags[name].filter((tag) => !data.includes(tag));
             setTags(newTags);
+          } else if (status === 405) {
+            // Method Not Allowed, REGISTRY_STORAGE_DELETE_ENABLED = "true"
+            alert(message);
           } else {
             alert(message);
           }

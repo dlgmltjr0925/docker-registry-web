@@ -71,7 +71,6 @@ const del = async (req: NextApiRequest, res: NextApiResponse) => {
 
             return null;
           } catch (error) {
-            console.log(error);
             throw error;
           }
         })
@@ -80,6 +79,16 @@ const del = async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(result);
   } catch (error) {
+    if (typeof error === 'object' && error.response) {
+      const { status, statusText } = error.response;
+      if (status === 405) {
+        return res.status(200).json({
+          status: 405,
+          message: statusText,
+          data: {},
+        });
+      }
+    }
     throw error;
   }
 };
