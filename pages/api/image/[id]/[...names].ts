@@ -6,23 +6,68 @@ import {
   response404,
   response500,
 } from '../../../../utils/api';
+import {
+  selectImageByIdAndName,
+  selectRegistryById,
+} from '../../../../utils/database';
 
 import { ApiResult } from '../../../../interfaces/api';
 import { promiseAll } from '../../../../utils/async';
-import { selectRegistryById } from '../../../../utils/database';
 
 interface ImageTags {
   name: string;
   tags: string[];
 }
+
+interface Query extends Record<string, string | string[]> {
+  id: string;
+  names: string[];
+}
+
+const get = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { id, names } = req.query as Query;
+
+    const registryId = parseInt(id, 10);
+    const name = names.join('/');
+
+    const registry = await selectRegistryById(registryId);
+
+    if (!registry) return response404(res);
+
+    const { url, token } = registry;
+
+    let registryUrl = getRegistyUrl(url, '/_catalog');
+    const config: AxiosRequestConfig = { headers: {} };
+    if (token) config.headers['Authorization'] = `Basic ${token}`;
+
+    const response = await axios.get<{ repositories: string[] }>(
+      registryUrl,
+      config
+    );
+
+    if (!response || !response.data || !response.data.repositories)
+      return response400(res);
+
+    const { repositories: images } = response.data;
+
+    if (!images.includes(name))
+      // Todo delete image in db
+      return response404(res);
+
+    const image = await selectImageByIdAndName({ registryId, name });
+
+    res.status(200).json({});
+  } catch (error) {
+    throw error;
+  }
+};
+
 const del = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { id, names } = req.query;
+    const { id, names } = req.query as Query;
 
-    if (Array.isArray(id)) return response400(res);
     const registryId = parseInt(id, 10);
-
-    if (typeof names === 'string') return response400(res);
     const name = names.join('/');
 
     const registry = await selectRegistryById(registryId);
@@ -96,6 +141,9 @@ const del = async (req: NextApiRequest, res: NextApiResponse) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
+      case 'GET':
+        await get(req, res);
+        break;
       case 'DELETE':
         await del(req, res);
         break;

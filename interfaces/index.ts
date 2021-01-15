@@ -2,7 +2,10 @@
 // and then use them in any component by importing them. For
 // example, to import the interface below do:
 export interface Image {
+  id?: number;
+  registryId?: number;
   name: string;
+  sourceRepositryUrl?: string;
 }
 export interface Registry {
   id: number;

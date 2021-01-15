@@ -25,8 +25,7 @@ db.serialize(() => {
           "id"	INTEGER PRIMARY KEY AUTOINCREMENT,
           "registry_id"	INTEGER NOT NULL,
           "name"	TEXT NOT NULL,
-          "alias"	TEXT,
-          "summary"	TEXT,
+          "source_repository_url": TEXT,
           "created_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
           "updated_at"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
           "deleted_at"	TEXT
