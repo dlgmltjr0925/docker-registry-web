@@ -91,18 +91,43 @@ export const selectRegistries = () => {
 /**
  * Image
  */
-interface SelectImageByIdAndNameArgs {
+interface ImageByIdAndNameArgs {
   registryId: number;
   name: string;
 }
+export const insertImageByIdAndName = ({
+  registryId,
+  name,
+}: ImageByIdAndNameArgs) => {
+  return new Promise<Image>((resolve, reject) => {
+    const db = new Database(DB_FILE_PATH);
+    db.run(
+      'INSERT INTO image (registry_id, name) VALUES (?, ?)',
+      [registryId, name],
+      (err) => {
+        if (err) reject(err);
+      }
+    );
+    db.get(
+      'SELECT * FROM image WHERE registry_id=? AND name=? ORDER BY id DESC;',
+      [registryId, name],
+      (err, row) => {
+        if (err) reject(err);
+        if (row) resolve(row);
+      }
+    );
+    db.close();
+  });
+};
+
 export const selectImageByIdAndName = ({
   registryId,
   name,
-}: SelectImageByIdAndNameArgs) => {
+}: ImageByIdAndNameArgs) => {
   return new Promise<Image | null>((resolve, reject) => {
     const db = new Database(DB_FILE_PATH);
     db.get(
-      'SELECT * FROM image WHERE registry_id=? AND name=?;',
+      'SELECT * FROM image WHERE registry_id=? AND name=? AND deleted_at IS NOT NULL;',
       [registryId, name],
       (err, row) => {
         if (err) reject(err);
@@ -111,6 +136,25 @@ export const selectImageByIdAndName = ({
         } else {
           resolve(null);
         }
+      }
+    );
+    db.close();
+  });
+};
+
+export const deleteImageByIdAndName = ({
+  registryId,
+  name,
+}: ImageByIdAndNameArgs) => {
+  return new Promise<boolean>((resolve, reject) => {
+    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+    const db = new Database(DB_FILE_PATH);
+    db.run(
+      'UPDATE image SET deleted_at=? WHERE registry_id=? AND name=? AND deleted_at IS NULL;',
+      [now, registryId, name],
+      (err) => {
+        if (err) reject(err);
+        resolve(true);
       }
     );
     db.close();

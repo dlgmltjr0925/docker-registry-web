@@ -1,17 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
+  deleteImageByIdAndName,
+  insertImageByIdAndName,
+  selectImageByIdAndName,
+  selectRegistryById,
+} from '../../../../utils/database';
 import {
   getRegistyUrl,
   response400,
   response404,
   response500,
 } from '../../../../utils/api';
-import {
-  selectImageByIdAndName,
-  selectRegistryById,
-} from '../../../../utils/database';
 
 import { ApiResult } from '../../../../interfaces/api';
+import { Image } from '../../../../interfaces';
 import { promiseAll } from '../../../../utils/async';
 
 interface ImageTags {
@@ -41,23 +44,32 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     const config: AxiosRequestConfig = { headers: {} };
     if (token) config.headers['Authorization'] = `Basic ${token}`;
 
-    const response = await axios.get<{ repositories: string[] }>(
-      registryUrl,
-      config
-    );
+    const promise1 = axios.get(registryUrl, config);
+
+    const promise2 = selectImageByIdAndName({ registryId, name });
+
+    let [response, image] = (await promiseAll([promise1, promise2])) as [
+      AxiosResponse<{ repositories: string[] }>,
+      Image | null
+    ];
 
     if (!response || !response.data || !response.data.repositories)
       return response400(res);
 
     const { repositories: images } = response.data;
 
-    if (!images.includes(name))
-      // Todo delete image in db
+    if (!images.includes(name)) {
+      deleteImageByIdAndName({ registryId, name });
       return response404(res);
+    } else if (image === null) {
+      image = await insertImageByIdAndName({ registryId, name });
+    }
 
-    const image = await selectImageByIdAndName({ registryId, name });
-
-    res.status(200).json({});
+    res.status(200).json({
+      status: 200,
+      message: 'success',
+      data: image,
+    });
   } catch (error) {
     throw error;
   }
