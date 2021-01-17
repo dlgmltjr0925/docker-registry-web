@@ -26,7 +26,7 @@ const Wrapper = styled.div`
     h1,
     h2 {
       padding-bottom: 0.3em;
-      border-bottom: 1px solid;
+      border-bottom: 1px solid #eaecef;
     }
 
     h2 {

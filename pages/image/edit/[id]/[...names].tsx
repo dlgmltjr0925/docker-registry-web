@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { ApiResult } from '../../../../interfaces/api';
+import { GetServerSidePropsContext } from 'next';
 import { Image } from '../../../../interfaces';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -80,7 +81,11 @@ interface Query extends Record<string, string | string[]> {
   names: string[];
 }
 
-const Edit = () => {
+interface EditProps {
+  image?: Image;
+}
+
+const Edit = ({ image }: EditProps) => {
   const router = useRouter();
 
   const { id, names } = router.query as Query;
@@ -90,7 +95,9 @@ const Edit = () => {
   const registryId = parseInt(id, 10);
   const name = names.join('/');
 
-  const [repositoryUrl, setRepositoryUrl] = useState<string>('');
+  const [repositoryUrl, setRepositoryUrl] = useState<string>(
+    image?.sourceRepositryUrl || ''
+  );
   const { isUploading, setRepository } = useSetImage({ registryId, name });
 
   const _handleChangeUrl = useCallback(
@@ -141,6 +148,29 @@ const Edit = () => {
       </Wrapper>
     </div>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const props: Partial<EditProps> = {};
+
+  const { id, names } = context.query as { id: string; names: string[] };
+
+  const name = names.join('/');
+
+  const res = await axios.get<ApiResult<Image>>(
+    `http://localhost:3000/api/image/${id}/${name}`
+  );
+
+  if (res && res.data) {
+    const { status, data } = res.data;
+    if (status === 200) props.image = data as Image;
+  }
+
+  return {
+    props,
+  };
 };
 
 export default Edit;
