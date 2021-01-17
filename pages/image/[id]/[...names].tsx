@@ -1,5 +1,5 @@
 import { Image, Registry } from '../../../interfaces';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
 import { ApiResult } from '../../../interfaces/api';
@@ -126,6 +126,32 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
 
   if (!registry || !image || !tags) return null;
 
+  const [content, setContent] = useState<string | null>(null);
+
+  const _getContent = useCallback(async () => {
+    try {
+      let url = image.sourceRepositryUrl;
+      if (!url) return;
+
+      if (/github.com/.test(url)) {
+        // https://raw.githubusercontent.com/dlgmltjr0925/hackatalk-mobile/master/README.md
+        url = url
+          .replace(/\/&/, '')
+          .replace('https://github.com/', 'https://raw.githubusercontent.com/');
+
+        url += '/master/README.md';
+
+        const res = await axios.get(url);
+
+        if (res && res.data) {
+          setContent(res.data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [setContent, image.sourceRepositryUrl]);
+
   const pullCommand = useMemo<string | null>(() => {
     if (tags.length === 0) return null;
     const tag = tags[tags.length - 1];
@@ -144,6 +170,10 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
     document.body.removeChild(tempEl);
     alert('Copied.');
   }, [pullCommand]);
+
+  useEffect(() => {
+    _getContent();
+  }, [image.sourceRepositryUrl]);
 
   return (
     <Wrapper>
@@ -177,17 +207,15 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
           )}
         </div>
       </div>
-      <div className='widget-wrapper'>
-        <div className='widget-row-wrapper summary'>
-          <div className='markdown markdown-body'>
-            {/* <div
-            className='markdown'
-            dangerouslySetInnerHTML={{ __html: mdAst.toString() }}
-          /> */}
-            {/* <ReactMarkdown children={md} /> */}
+      {content && (
+        <div className='widget-wrapper'>
+          <div className='widget-row-wrapper summary'>
+            <div className='markdown markdown-body'>
+              <ReactMarkdown children={content} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </Wrapper>
   );
 };

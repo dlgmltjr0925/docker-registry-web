@@ -113,7 +113,8 @@ export const insertImageByIdAndName = ({
       [registryId, name],
       (err, row) => {
         if (err) reject(err);
-        if (row) resolve(row);
+        if (row)
+          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
       }
     );
     db.close();
@@ -132,7 +133,7 @@ export const selectImageByIdAndName = ({
       (err, row) => {
         if (err) reject(err);
         if (row) {
-          resolve(row);
+          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
         } else {
           resolve(null);
         }
@@ -173,7 +174,8 @@ export const updateImageByIdAndName = ({
       (err, row) => {
         console.log(err);
         if (err) reject(err);
-        if (row) resolve(row);
+        if (row)
+          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
         else resolve(null);
       }
     );
