@@ -16,6 +16,8 @@ interface WrapperProps {
 }
 
 const Wrapper = styled.div<WrapperProps>`
+  font-family: 'Montserrat', sans-serif;
+
   #body {
     position: relative;
     min-height: 100vh;
@@ -66,7 +68,6 @@ const Layout = ({ children }: Props) => {
           sizes='32x32'
           href='/images/favicon-32x32.png'
         />
-        <link rel='stylesheet' href='github-markdown.css' />
       </Head>
       <div id='body'>
         <SideBar

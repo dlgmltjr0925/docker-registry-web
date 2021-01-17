@@ -16,6 +16,7 @@ const HeaderWrapper = styled.header`
   height: 60px;
   background: #fff;
   margin-bottom: 15px;
+  z-index: 1;
 
   .title-wrapper {
     padding-top: 7px;

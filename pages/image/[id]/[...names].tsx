@@ -8,7 +8,9 @@ import IconCopy from '../../../public/images/icon_copy.svg';
 import IconCube from '../../../public/images/icon_cube.svg';
 import IconGear from '../../../public/images/icon_gear.svg';
 import Link from 'next/link';
+import MarkDownWrapper from '../../../components/common/MarkDownWrapper';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -134,7 +136,6 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
       if (!url) return;
 
       if (/github.com/.test(url)) {
-        // https://raw.githubusercontent.com/dlgmltjr0925/hackatalk-mobile/master/README.md
         url = url
           .replace(/\/&/, '')
           .replace('https://github.com/', 'https://raw.githubusercontent.com/');
@@ -144,7 +145,9 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
         const res = await axios.get(url);
 
         if (res && res.data) {
-          setContent(res.data);
+          const content = res.data.replace(/<!--(.*?)-->/gis, '');
+
+          setContent(content);
         }
       }
     } catch (error) {
@@ -210,9 +213,13 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
       {content && (
         <div className='widget-wrapper'>
           <div className='widget-row-wrapper summary'>
-            <div className='markdown markdown-body'>
-              <ReactMarkdown children={content} />
-            </div>
+            <MarkDownWrapper>
+              <ReactMarkdown
+                plugins={[remarkGfm]}
+                allowDangerousHtml
+                children={content}
+              />
+            </MarkDownWrapper>
           </div>
         </div>
       )}
