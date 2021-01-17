@@ -5,6 +5,7 @@ import {
   insertImageByIdAndName,
   selectImageByIdAndName,
   selectRegistryById,
+  updateImageByIdAndName,
 } from '../../../../utils/database';
 import {
   getRegistyUrl,
@@ -25,6 +26,10 @@ interface ImageTags {
 interface Query extends Record<string, string | string[]> {
   id: string;
   names: string[];
+}
+
+interface PutBody {
+  repositoryUrl: string;
 }
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -64,6 +69,32 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (image === null) {
       image = await insertImageByIdAndName({ registryId, name });
     }
+
+    res.status(200).json({
+      status: 200,
+      message: 'success',
+      data: image,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const put = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { id, names } = req.query as Query;
+    const { repositoryUrl } = req.body as PutBody;
+
+    if (repositoryUrl === undefined) return response400(res);
+
+    const registryId = parseInt(id, 10);
+    const name = names.join('/');
+
+    const image = await updateImageByIdAndName({
+      registryId,
+      name,
+      repositoryUrl,
+    });
 
     res.status(200).json({
       status: 200,
@@ -155,6 +186,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
       case 'GET':
         await get(req, res);
+        break;
+      case 'PUT':
+        await put(req, res);
         break;
       case 'DELETE':
         await del(req, res);

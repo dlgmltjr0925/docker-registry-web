@@ -127,7 +127,7 @@ export const selectImageByIdAndName = ({
   return new Promise<Image | null>((resolve, reject) => {
     const db = new Database(DB_FILE_PATH);
     db.get(
-      'SELECT * FROM image WHERE registry_id=? AND name=? AND deleted_at IS NOT NULL;',
+      'SELECT * FROM image WHERE registry_id=? AND name=? AND deleted_at IS NULL;',
       [registryId, name],
       (err, row) => {
         if (err) reject(err);
@@ -136,6 +136,45 @@ export const selectImageByIdAndName = ({
         } else {
           resolve(null);
         }
+      }
+    );
+    db.close();
+  });
+};
+
+interface UpdateImageByIdAndNameArgs extends ImageByIdAndNameArgs {
+  repositoryUrl: string;
+}
+
+export const updateImageByIdAndName = ({
+  registryId,
+  name,
+  repositoryUrl,
+}: UpdateImageByIdAndNameArgs) => {
+  return new Promise<Image | null>((resolve, reject) => {
+    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+    const db = new Database(DB_FILE_PATH);
+
+    db.run(
+      `UPDATE image 
+      SET source_repository_url=?, updated_at=? 
+      WHERE registry_id=? AND name=? AND deleted_at IS NULL;`,
+      [repositoryUrl, now, registryId, name],
+      (err) => {
+        if (err) reject(err);
+      }
+    );
+
+    db.get(
+      `SELECT * FROM image 
+      WHERE registry_id=? AND name=? AND deleted_at IS NULL
+      ORDER BY id DESC;`,
+      [registryId, name],
+      (err, row) => {
+        console.log(err);
+        if (err) reject(err);
+        if (row) resolve(row);
+        else resolve(null);
       }
     );
     db.close();

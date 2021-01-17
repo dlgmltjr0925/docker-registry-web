@@ -4,7 +4,7 @@ import { ApiResult } from '../interfaces/api';
 import { useState } from 'react';
 
 interface SetRepository {
-  url?: string;
+  repositoryUrl?: string;
 }
 
 interface UseSetImageProps {
@@ -16,18 +16,17 @@ export const useSetImage = ({ registryId, name }: UseSetImageProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const setRepository = async ({
-    url,
+    repositoryUrl,
   }: SetRepository): Promise<AxiosResponse<ApiResult> | void> => {
     try {
       if (isUploading) return;
       setIsUploading(true);
 
       const body: Record<string, string> = {};
-      if (url) body.url = url;
+      if (repositoryUrl) body.repositoryUrl = repositoryUrl;
 
       return await axios.put(`/api/image/${registryId}/${name}`, body);
     } catch (error) {
-      setIsUploading(false);
       throw error;
     } finally {
       setIsUploading(false);

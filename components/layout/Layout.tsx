@@ -66,6 +66,7 @@ const Layout = ({ children }: Props) => {
           sizes='32x32'
           href='/images/favicon-32x32.png'
         />
+        <link rel='stylesheet' href='github-markdown.css' />
       </Head>
       <div id='body'>
         <SideBar

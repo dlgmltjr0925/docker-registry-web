@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
+import { ApiResult } from '../../../../interfaces/api';
+import { Image } from '../../../../interfaces';
+import axios from 'axios';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useSetImage } from '../../../../hooks/image';
@@ -87,24 +90,27 @@ const Edit = () => {
   const registryId = parseInt(id, 10);
   const name = names.join('/');
 
-  const [url, setUrl] = useState<string>('');
+  const [repositoryUrl, setRepositoryUrl] = useState<string>('');
   const { isUploading, setRepository } = useSetImage({ registryId, name });
 
   const _handleChangeUrl = useCallback(
     ({ target: { value } }) => {
-      setUrl(value);
+      setRepositoryUrl(value);
     },
-    [setUrl]
+    [setRepositoryUrl]
   );
 
   const _handleClickAddButton = async () => {
     try {
-      const res = await setRepository({ url });
+      const res = await setRepository({ repositoryUrl });
 
       if (res && res.data) {
         const { status, message } = res.data;
-        if (status === 200) router.push('/');
-        else alert(message);
+        if (status === 200) {
+          router.push(`/image/${id}/${names}`);
+        } else {
+          alert(message);
+        }
       }
     } catch (error) {
       alert(error.message);
@@ -120,7 +126,7 @@ const Edit = () => {
           <input
             type='text'
             placeholder='https://github.com/user/registry-docker-ui'
-            value={url}
+            value={repositoryUrl}
             onChange={_handleChangeUrl}
           />
         </div>

@@ -8,6 +8,7 @@ import IconCopy from '../../../public/images/icon_copy.svg';
 import IconCube from '../../../public/images/icon_cube.svg';
 import IconGear from '../../../public/images/icon_gear.svg';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -71,14 +72,14 @@ const Wrapper = styled.div<WrapperProps>`
       .command {
         position: relative;
         background: #27343b;
-        padding: 15px 10px;
+        padding: 15px 10px 15px 40px;
         color: #fff;
         font-size: 13px;
       }
 
       .copy {
         position: absolute;
-        right: 10px;
+        left: 10px;
         top: 10px;
         width: 20px;
         height: 20px;
@@ -103,6 +104,16 @@ const Wrapper = styled.div<WrapperProps>`
         }
       }
     }
+  }
+
+  .markdown * {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+      sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  }
+
+  .widget-row-wrapper.summary {
+    border: 0;
+    padding: 25px;
   }
 `;
 
@@ -164,6 +175,17 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
               </Link>
             </div>
           )}
+        </div>
+      </div>
+      <div className='widget-wrapper'>
+        <div className='widget-row-wrapper summary'>
+          <div className='markdown markdown-body'>
+            {/* <div
+            className='markdown'
+            dangerouslySetInnerHTML={{ __html: mdAst.toString() }}
+          /> */}
+            {/* <ReactMarkdown children={md} /> */}
+          </div>
         </div>
       </div>
     </Wrapper>
