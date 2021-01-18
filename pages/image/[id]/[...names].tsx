@@ -175,6 +175,7 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
   }, [pullCommand]);
 
   useEffect(() => {
+    setContent(null);
     _getContent();
   }, [image.sourceRepositryUrl]);
 
