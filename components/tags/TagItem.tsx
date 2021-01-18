@@ -80,7 +80,7 @@ const TagWrapper = styled.li<TagWrapperProps>`
     .layer {
       border: 1px solid #eee;
       padding: 10px 10px;
-      font-size: 14px;
+      font-size: 13px;
       margin-bottom: 5px;
       box-shadow: 1px 1px 3px #ccc;
 
@@ -92,6 +92,16 @@ const TagWrapper = styled.li<TagWrapperProps>`
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
           Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       }
+
+      .digest {
+        margin-right: 20px;
+      }
+    }
+
+    .title {
+      font-weight: 500;
+      margin-bottom: 10px;
+      margin-left: 10px;
     }
   }
 `;
@@ -123,10 +133,12 @@ const TagItem = ({ item: { digest, names, layers } }: TagItemProps) => {
         <span className='digest'>{`digest: ${digest}`}</span>
       </div>
       <div className='layer-wrapper'>
+        <div className='title'>Layers</div>
         {layers.map((layer) => {
           return (
             <div key={layer.digest} className='layer'>
-              <span>{layer.digest}</span>
+              <span className='digest'>digest: {layer.digest}</span>
+              <span className='size'>size: {layer.size}</span>
             </div>
           );
         })}

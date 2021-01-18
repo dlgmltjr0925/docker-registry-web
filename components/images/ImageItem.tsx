@@ -168,7 +168,7 @@ const RegistryItem = ({ item, onClickRemove }: ImageItemProps) => {
             <div className='tags-wrapper'>
               <ul>
                 {tags.map((tag) => {
-                  const url = `/manifest/${registryId}/${name}/${tag}`;
+                  const url = `/tags/${registryId}/${name}?tag=${tag.name}`;
                   return (
                     <li key={tag.name} className=''>
                       <Link href={url}>

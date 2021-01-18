@@ -80,24 +80,6 @@ export const getLayoutInfo = ({
         { type: 'tags', options: { name } },
       ];
       break;
-    case '/manifest/[id]/[...tags]': {
-      if (!tags) break;
-      const tag = (tags as string[]).pop();
-      const name = getName(names);
-
-      layoutInfo.title = 'Manifest';
-      layoutInfo.subtitles = [
-        { name: 'Images', url: `/images/${id}` },
-        { name, url: `/image/${id}/${name}` },
-        { name: 'Tags', url: `/tags/${id}/${name}` },
-        { name: tag as string, url: `/manifest/${id}/${name}` },
-      ];
-      layoutInfo.sideTabs = [
-        { type: 'image', options: { name } },
-        { type: 'tags', options: { name } },
-      ];
-      break;
-    }
   }
 
   return layoutInfo;

@@ -157,8 +157,9 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
 
   const pullCommand = useMemo<string | null>(() => {
     if (tags.length === 0) return null;
-    const tag = tags[tags.length - 1];
-    return `docker pull https://${registry.url}/${image.name}:${tag}`;
+    const sortedTags = tags.sort((a, b) => (a.name < b.name ? 1 : -1));
+    const tag = sortedTags[0];
+    return `docker pull https://${registry.url}/${image.name}:${tag.name}`;
   }, [registry, image, tags]);
 
   const _handleClickCopy = useCallback(() => {

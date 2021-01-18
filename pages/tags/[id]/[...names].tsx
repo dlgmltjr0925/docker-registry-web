@@ -1,5 +1,5 @@
 import { Image, Registry, Tag } from '../../../interfaces';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import TagItem, { Item } from '../../../components/tags/TagItem';
 import axios, { AxiosResponse } from 'axios';
 
@@ -8,6 +8,7 @@ import { GetServerSidePropsContext } from 'next';
 import IconSearch from '../../../public/images/icon_search.svg';
 import IconTags from '../../../public/images/icon_tags.svg';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 interface WrapperProps {}
 
@@ -54,7 +55,11 @@ interface TagsProps {
 }
 
 const Tags = ({ tags = [] }: TagsProps) => {
-  const [keyword, setKeyword] = useState<string>('');
+  const router = useRouter();
+
+  const { tag } = router.query;
+
+  const [keyword, setKeyword] = useState<string>((tag as string) || '');
 
   const _handleChangeKeyword = useCallback(
     ({ target: { value } }) => {
@@ -98,6 +103,10 @@ const Tags = ({ tags = [] }: TagsProps) => {
       return tagItems;
     }
   }, [tagItems, keyword]);
+
+  useEffect(() => {
+    setKeyword((tag as string) || '');
+  }, [tag]);
 
   return (
     <Wrapper>
