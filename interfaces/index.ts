@@ -2,9 +2,16 @@
 // and then use them in any component by importing them. For
 // example, to import the interface below do:
 
+export interface Layer {
+  mediaType: string;
+  size: number;
+  digest: string;
+}
+
 export interface Tag {
   name: string;
   digest?: string;
+  layers?: Layer[];
 }
 export interface Image {
   id?: number;

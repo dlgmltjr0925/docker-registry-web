@@ -1,4 +1,4 @@
-import { Image, Registry } from '../../interfaces';
+import { Image, Registry, Tag } from '../../interfaces';
 import ImageItem, { Item } from '../../components/images/ImageItem';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -15,7 +15,7 @@ interface WrapperProps {}
 
 interface ImagesProps {
   registry?: Registry;
-  tags: Record<string, string[]>;
+  tags: Record<string, Tag[]>;
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -57,7 +57,7 @@ const Wrapper = styled.div<WrapperProps>`
 const Images = ({ registry, ...props }: ImagesProps) => {
   const router = useRouter();
   const [images] = useState<Image[]>(registry?.images || []);
-  const [tags, setTags] = useState<Record<string, string[]>>(props.tags);
+  const [tags, setTags] = useState<Record<string, Tag[]>>(props.tags || {});
   const [keyword, setKeyword] = useState<string>('');
 
   const _handleChangeKeyword = useCallback(
@@ -98,7 +98,9 @@ const Images = ({ registry, ...props }: ImagesProps) => {
           const { status, message, data } = res.data;
           if (status === 200) {
             const newTags = { ...tags };
-            newTags[name] = newTags[name].filter((tag) => !data.includes(tag));
+            newTags[name] = newTags[name].filter(
+              (tag) => !data.includes(tag.name)
+            );
             setTags(newTags);
           } else if (status === 405) {
             // Method Not Allowed, REGISTRY_STORAGE_DELETE_ENABLED = "true"
@@ -187,7 +189,7 @@ export const getServerSideProps = async ({
         await promiseAll(
           data.images.map(async ({ name }) => {
             try {
-              const result = await axios.get<ApiResult<string[]>>(
+              const result = await axios.get<ApiResult<Tag[]>>(
                 `http://localhost:3000/api/tags/${id}/${name}`
               );
 

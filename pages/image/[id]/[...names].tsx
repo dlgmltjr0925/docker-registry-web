@@ -1,4 +1,4 @@
-import { Image, Registry } from '../../../interfaces';
+import { Image, Registry, Tag } from '../../../interfaces';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 interface ImagePageProps {
   registry?: Registry;
   image?: Image;
-  tags?: string[];
+  tags?: Tag[];
 }
 
 interface WrapperProps {}
@@ -263,7 +263,7 @@ export const getServerSideProps = async (
 
   if (res && res.data) {
     const { status, data } = res.data;
-    if (status === 200) props.tags = data as string[];
+    if (status === 200) props.tags = data as Tag[];
   }
 
   return {

@@ -8,6 +8,8 @@ import {
 } from '../../../../utils/api';
 
 import { ApiResult } from '../../../../interfaces/api';
+import { Tag } from '../../../../interfaces';
+import { promiseAll } from '../../../../utils/async';
 import { selectRegistryById } from '../../../../utils/database';
 
 interface ImageTags {
@@ -30,19 +32,41 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     const { url, token } = registry;
 
     const registryUrl = getRegistyUrl(url, `/${name}/tags/list`);
-    const config: AxiosRequestConfig = { headers: {} };
+    const config: AxiosRequestConfig = {
+      headers: {
+        Accept: 'application/vnd.docker.distribution.manifest.v2+json',
+      },
+    };
     if (token) config.headers['Authorization'] = `Basic ${token}`;
 
     const axiosResponse = await axios.get<ImageTags>(registryUrl, config);
 
-    const result: ApiResult<string[]> = {
+    const result: ApiResult<Tag[]> = {
       status: 200,
       message: 'success',
       data: [],
     };
 
     if (axiosResponse && axiosResponse.data) {
-      result.data = axiosResponse.data.tags;
+      result.data = (await promiseAll(
+        axiosResponse.data.tags.map(async (tag) => {
+          try {
+            const _tag: Tag = { name: tag };
+            const registryUrl = getRegistyUrl(url, `/${name}/manifests/${tag}`);
+            const res = await axios.get(registryUrl, config);
+            if (res) {
+              const { status, headers, data } = res;
+              if (status === 200) {
+                _tag.digest = headers['docker-content-digest'];
+                _tag.layers = data.layers;
+              }
+            }
+            return _tag;
+          } catch (error) {
+            throw error;
+          }
+        })
+      )) as Tag[];
     }
 
     res.status(200).json(result);

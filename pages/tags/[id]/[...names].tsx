@@ -54,7 +54,8 @@ interface TagsProps {
   tags?: Tag[];
 }
 
-const Tags = ({ tags }: TagsProps) => {
+const Tags = ({ registry, image, tags = [] }: TagsProps) => {
+  console.log(JSON.stringify(tags, null, 2));
   const router = useRouter();
   const [keyword, setKeyword] = useState<string>('');
 
@@ -116,7 +117,7 @@ export const getServerSideProps = async (
   const name = names.join('/');
 
   // registry
-  let res: AxiosResponse<ApiResult<Registry | Image | string[]>>;
+  let res: AxiosResponse<ApiResult<Registry | Image | Tag[]>>;
   res = await axios.get<ApiResult<Registry>>(
     `http://localhost:3000/api/registry/${id}`
   );
@@ -135,16 +136,14 @@ export const getServerSideProps = async (
     if (status === 200) props.image = data as Image;
   }
 
-  res = await axios.get<ApiResult<string[]>>(
+  res = await axios.get<ApiResult<Tag[]>>(
     `http://localhost:3000/api/tags/${id}/${name}`
   );
 
   if (res && res.data) {
     const { status, data } = res.data;
     if (status === 200) {
-      props.tags = (data as string[]).map((name) => ({
-        name,
-      }));
+      props.tags = data as Tag[];
     }
   }
 

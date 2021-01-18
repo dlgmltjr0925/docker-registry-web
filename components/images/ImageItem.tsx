@@ -4,12 +4,13 @@ import IconCube from '../../public/images/icon_cube.svg';
 import IconTags from '../../public/images/icon_tags.svg';
 import IconTrash from '../../public/images/icon_trash.svg';
 import Link from 'next/link';
+import { Tag } from '../../interfaces';
 import styled from 'styled-components';
 
 export interface Item {
   registryId: number;
   name: string;
-  tags?: string[];
+  tags?: Tag[];
 }
 
 interface ImageItemProps {
@@ -169,9 +170,9 @@ const RegistryItem = ({ item, onClickRemove }: ImageItemProps) => {
                 {tags.map((tag) => {
                   const url = `/manifest/${registryId}/${name}/${tag}`;
                   return (
-                    <li key={tag} className=''>
+                    <li key={tag.name} className=''>
                       <Link href={url}>
-                        <span>{tag}</span>
+                        <span>{tag.name}</span>
                       </Link>
                     </li>
                   );
