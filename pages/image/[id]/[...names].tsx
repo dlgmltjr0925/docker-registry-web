@@ -238,7 +238,7 @@ export const getServerSideProps = async (
   const name = names.join('/');
 
   // registry
-  let res: AxiosResponse<ApiResult<Registry | Image | string[]>>;
+  let res: AxiosResponse<ApiResult<Registry | Image | Tag[]>>;
   res = await axios.get<ApiResult<Registry>>(
     `http://localhost:3000/api/registry/${id}`
   );
@@ -257,7 +257,7 @@ export const getServerSideProps = async (
     if (status === 200) props.image = data as Image;
   }
 
-  res = await axios.get<ApiResult<string[]>>(
+  res = await axios.get<ApiResult<Tag[]>>(
     `http://localhost:3000/api/tags/${id}/${name}`
   );
 

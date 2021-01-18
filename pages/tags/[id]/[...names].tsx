@@ -1,14 +1,13 @@
 import { Image, Registry, Tag } from '../../../interfaces';
 import React, { useCallback, useMemo, useState } from 'react';
+import TagItem, { Item } from '../../../components/tags/TagItem';
 import axios, { AxiosResponse } from 'axios';
 
 import { ApiResult } from '../../../interfaces/api';
 import { GetServerSidePropsContext } from 'next';
 import IconSearch from '../../../public/images/icon_search.svg';
 import IconTags from '../../../public/images/icon_tags.svg';
-import Link from 'next/link';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 interface WrapperProps {}
 
@@ -54,9 +53,7 @@ interface TagsProps {
   tags?: Tag[];
 }
 
-const Tags = ({ registry, image, tags = [] }: TagsProps) => {
-  console.log(JSON.stringify(tags, null, 2));
-  const router = useRouter();
+const Tags = ({ tags = [] }: TagsProps) => {
   const [keyword, setKeyword] = useState<string>('');
 
   const _handleChangeKeyword = useCallback(
@@ -66,11 +63,41 @@ const Tags = ({ registry, image, tags = [] }: TagsProps) => {
     [setKeyword]
   );
 
-  const filteredTags = useMemo<Tag[]>(() => {
-    if (keyword.trim() === '') return tags;
+  const tagItems = useMemo<Item[]>(() => {
+    const sortedTags = tags.sort((a, b) => (a.name < b.name ? 1 : -1));
+    const digestObject: Record<string, Item> = {};
+    sortedTags.forEach((tag) => {
+      const { digest, name, layers } = tag;
+      if (!digest || !layers) return;
+      if (!digestObject[digest]) {
+        digestObject[digest] = { digest, names: [name], layers };
+      } else {
+        digestObject[digest].names.push(name);
+      }
+    });
 
-    return [];
-  }, []);
+    return Object.values(digestObject);
+  }, [tags]);
+
+  const filteredTags = useMemo<Item[]>(() => {
+    if (keyword.trim() === '') return tagItems;
+
+    try {
+      const regExps = keyword
+        .trim()
+        .split(' ')
+        .map((keyword) => new RegExp(keyword));
+
+      return tagItems.filter(({ names }) => {
+        const name = names.join(' ');
+        for (let regExp of regExps) {
+          if (regExp.test(name)) return true;
+        }
+      });
+    } catch (error) {
+      return tagItems;
+    }
+  }, [tagItems, keyword]);
 
   return (
     <Wrapper>
@@ -86,7 +113,7 @@ const Tags = ({ registry, image, tags = [] }: TagsProps) => {
           <IconSearch className='search-icon' />
           <input
             type='text'
-            placeholder='Search by name, tag'
+            placeholder='Search by tag'
             value={keyword}
             onChange={_handleChangeKeyword}
           />
@@ -96,8 +123,8 @@ const Tags = ({ registry, image, tags = [] }: TagsProps) => {
             <p className='empty-content'>No Tag available</p>
           ) : (
             <ul>
-              {filteredTags.map(({ name }) => {
-                return <div key={name}>{name}</div>;
+              {filteredTags.map((tag) => {
+                return <TagItem key={tag.digest} item={tag} />;
               })}
             </ul>
           )}
