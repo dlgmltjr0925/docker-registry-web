@@ -1,3 +1,4 @@
+import IconTags from '../../../public/images/icon_tags.svg';
 import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -11,8 +12,12 @@ const Manifest = () => {
 
   return (
     <Wrapper>
-      <p>{router.query.id}</p>
-      <div>Manifest</div>
+      <div className='widget-header-wrapper'>
+        <div className='header-title'>
+          <IconTags className='header-icon' />
+          <span>Images</span>
+        </div>
+      </div>
     </Wrapper>
   );
 };
