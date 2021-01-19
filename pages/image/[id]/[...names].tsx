@@ -159,7 +159,7 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
     if (tags.length === 0) return null;
     const sortedTags = tags.sort((a, b) => (a.name < b.name ? 1 : -1));
     const tag = sortedTags[0];
-    return `docker pull https://${registry.url}/${image.name}:${tag.name}`;
+    return `docker pull ${registry.url}/${image.name}:${tag.name}`;
   }, [registry, image, tags]);
 
   const _handleClickCopy = useCallback(() => {

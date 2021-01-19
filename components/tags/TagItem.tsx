@@ -110,7 +110,7 @@ const TagItem = ({ item: { digest, names, layers } }: TagItemProps) => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
   const _handlePress = useCallback(
-    (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
+    (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
       e.preventDefault();
       setIsOpened(!isOpened);
     },
@@ -118,8 +118,8 @@ const TagItem = ({ item: { digest, names, layers } }: TagItemProps) => {
   );
 
   return (
-    <TagWrapper isOpened={isOpened} onClick={_handlePress}>
-      <div className='tags-wrapper'>
+    <TagWrapper isOpened={isOpened}>
+      <div className='tags-wrapper' onClick={_handlePress}>
         <div>
           <IconTag className='image' />
           {names.map((name) => {
@@ -138,7 +138,7 @@ const TagItem = ({ item: { digest, names, layers } }: TagItemProps) => {
           return (
             <div key={layer.digest} className='layer'>
               <span className='digest'>digest: {layer.digest}</span>
-              <span className='size'>size: {layer.size}</span>
+              <span className='size'> size: {layer.size}</span>
             </div>
           );
         })}

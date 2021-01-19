@@ -62,6 +62,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
         padding: 4px 0 10px 5px;
         font-size: 16px;
         font-weight: 500;
+        letter-spacing: -0.5px;
       }
     }
 
