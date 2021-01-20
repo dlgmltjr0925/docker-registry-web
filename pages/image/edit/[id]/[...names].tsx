@@ -160,7 +160,7 @@ export const getServerSideProps = async (
   const name = names.join('/');
 
   const res = await axios.get<ApiResult<Image>>(
-    `http://localhost:3000/api/image/${id}/${name}`
+    `http://${process.env.host}:${process.env.port}/api/image/${id}/${name}`
   );
 
   if (res && res.data) {

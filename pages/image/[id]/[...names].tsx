@@ -241,7 +241,7 @@ export const getServerSideProps = async (
   // registry
   let res: AxiosResponse<ApiResult<Registry | Image | Tag[]>>;
   res = await axios.get<ApiResult<Registry>>(
-    `http://localhost:3000/api/registry/${id}`
+    `http://${process.env.host}:${process.env.port}/api/registry/${id}`
   );
 
   if (res && res.data) {
@@ -250,7 +250,7 @@ export const getServerSideProps = async (
   }
 
   res = await axios.get<ApiResult<Image>>(
-    `http://localhost:3000/api/image/${id}/${name}`
+    `http://${process.env.host}:${process.env.port}/api/image/${id}/${name}`
   );
 
   if (res && res.data) {
@@ -259,7 +259,7 @@ export const getServerSideProps = async (
   }
 
   res = await axios.get<ApiResult<Tag[]>>(
-    `http://localhost:3000/api/tags/${id}/${name}`
+    `http://${process.env.host}:${process.env.port}/api/tags/${id}/${name}`
   );
 
   if (res && res.data) {

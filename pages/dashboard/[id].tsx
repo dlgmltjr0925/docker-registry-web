@@ -97,7 +97,7 @@ export const getServerSideProps = async ({
   const props: Partial<DashboardProps> = {};
 
   const result = await axios.get<ApiResult<Registry>>(
-    `http://localhost:3000/api/registry/${id}`
+    `http://${process.env.host}:${process.env.port}/api/registry/${id}`
   );
 
   if (result && result.data) {

@@ -158,7 +158,9 @@ export const getServerSideProps = async () => {
   };
 
   try {
-    const res = await axios.get('http://localhost:3000/api/registries');
+    const res = await axios.get(
+      `http://${process.env.host}:${process.env.port}/api/registries`
+    );
 
     if (res && res.data) {
       const { data } = res.data;

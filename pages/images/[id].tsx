@@ -178,7 +178,7 @@ export const getServerSideProps = async ({
   };
 
   const result = await axios.get<ApiResult<Registry>>(
-    `http://localhost:3000/api/registry/${id}`
+    `http://${process.env.host}:${process.env.port}/api/registry/${id}`
   );
 
   if (result && result.data) {
@@ -190,7 +190,7 @@ export const getServerSideProps = async ({
           data.images.map(async ({ name }) => {
             try {
               const result = await axios.get<ApiResult<Tag[]>>(
-                `http://localhost:3000/api/tags/${id}/${name}`
+                `http://${process.env.host}:${process.env.port}/api/tags/${id}/${name}`
               );
 
               if (result && result.data) {
