@@ -27,7 +27,7 @@ interface SideBarWrapperProps {
 
 const SideBarWrapper = styled.div<SideBarWrapperProps>`
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   background: #334267;
   width: 250px;
   min-height: inherit;

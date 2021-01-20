@@ -29,7 +29,7 @@ export const getLayoutInfo = ({
     sideTabs: [],
   };
 
-  const { id, names, tags } = query;
+  const { id, names } = query;
   let name;
 
   switch (route) {
