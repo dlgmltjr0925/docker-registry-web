@@ -10,25 +10,24 @@ export default class Api {
     this.handler = this.handler.bind(this);
   }
 
-  async get(req: NextApiRequest, res: NextApiResponse) {
+  async get(_: NextApiRequest, res: NextApiResponse) {
     response404(res);
   }
 
-  async post(req: NextApiRequest, res: NextApiResponse) {
+  async post(_: NextApiRequest, res: NextApiResponse) {
+    console.log('origin');
     response404(res);
   }
 
-  async put(req: NextApiRequest, res: NextApiResponse) {
+  async put(_: NextApiRequest, res: NextApiResponse) {
     response404(res);
   }
 
-  async delete(req: NextApiRequest, res: NextApiResponse) {
+  async delete(_: NextApiRequest, res: NextApiResponse) {
     response404(res);
   }
 
   async handler(req: NextApiRequest, res: NextApiResponse) {
-    debugger;
-    console.log(req);
     try {
       switch (req.method) {
         case 'GET':

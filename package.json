@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "prepare": "./scripts/prepare.sh",
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "debug": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "next dev",
     "build": "next build",
     "prestart": "yarn prepare",
     "start": "next start",
