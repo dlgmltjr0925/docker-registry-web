@@ -309,9 +309,35 @@ export interface ConstructionArgs {
 /**
  *
  */
-export default class ErrorApi extends Error {
+export default class ApiError extends Error {
   /**
-   *
+   * 400 Error
+   */
+  static ERROR_400 = new ApiError({
+    status: Status.BAD_REQUEST,
+    code: 400,
+    message: 'Bad request',
+  });
+
+  /**
+   * 404 Error
+   */
+  static ERROR_404 = new ApiError({
+    status: Status.NOT_FOUND,
+    code: 404,
+    message: 'Not found',
+  });
+
+  /**
+   * 500 Error
+   */
+  static ERROR_500 = new ApiError({
+    status: Status.INTERNAL_SERVER_ERROR,
+    code: 500,
+    message: 'Internal server error',
+  });
+
+  /**
    * @param constructionArg
    */
   constructor(constructionArg: ConstructionArgs) {

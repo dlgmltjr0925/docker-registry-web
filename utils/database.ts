@@ -77,7 +77,7 @@ export const deleteRegistry = (id: number) => {
   });
 };
 
-export const selectRegistries = () => {
+export const getRegistries = () => {
   return new Promise<Registry[]>((resolve, reject) => {
     const db = new Database(DB_FILE_PATH);
     db.all('SELECT * FROM registry WHERE deleted_at IS NULL;', (err, rows) => {

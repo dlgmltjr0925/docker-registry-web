@@ -158,16 +158,16 @@ export const getServerSideProps = async () => {
   };
 
   try {
-    const res = await axios.get(
+    const res = await axios.get<{ registries: Registry[] }>(
       `http://${process.env.host}:${process.env.port}/api/registries`
     );
 
     if (res && res.data) {
-      const { data } = res.data;
-      props.registries = data.registries;
+      const { registries } = res.data;
+      props.registries = registries;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   return {
