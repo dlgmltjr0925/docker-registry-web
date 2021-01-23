@@ -1,3 +1,4 @@
+import ApiError, { Status } from './ApiError';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { response404, response500 } from '../utils/api';
 
@@ -11,20 +12,19 @@ export default class Api {
   }
 
   async get(_: NextApiRequest, res: NextApiResponse) {
-    response404(res);
+    throw ApiError.ERROR_404;
   }
 
   async post(_: NextApiRequest, res: NextApiResponse) {
-    console.log('origin');
-    response404(res);
+    throw ApiError.ERROR_404;
   }
 
   async put(_: NextApiRequest, res: NextApiResponse) {
-    response404(res);
+    throw ApiError.ERROR_404;
   }
 
   async delete(_: NextApiRequest, res: NextApiResponse) {
-    response404(res);
+    throw ApiError.ERROR_404;
   }
 
   async handler(req: NextApiRequest, res: NextApiResponse) {
@@ -43,12 +43,19 @@ export default class Api {
           await this.delete(req, res);
           break;
         default:
-          response404(res);
+          throw ApiError.ERROR_404;
           break;
       }
     } catch (error) {
       console.error(error);
-      response500(res);
+      const { status, message } = error;
+      if (status && message) {
+        return res.status(status).json({ message });
+      } else {
+        return res
+          .status(Status.INTERNAL_SERVER_ERROR)
+          .json({ message: 'Internal Server Error' });
+      }
     }
   }
 }

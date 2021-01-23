@@ -293,16 +293,11 @@ export enum Status {
 }
 
 /**
- * Custom Error Code
- */
-export enum ErrorCode {}
-
-/**
  *
  */
 export interface ConstructionArgs {
   status: Status;
-  code: ErrorCode;
+  code: number;
   message: string;
 }
 
@@ -315,7 +310,7 @@ export default class ApiError extends Error {
    */
   static ERROR_400 = new ApiError({
     status: Status.BAD_REQUEST,
-    code: 400,
+    code: Status.BAD_REQUEST,
     message: 'Bad request',
   });
 
@@ -324,7 +319,7 @@ export default class ApiError extends Error {
    */
   static ERROR_404 = new ApiError({
     status: Status.NOT_FOUND,
-    code: 404,
+    code: Status.NOT_FOUND,
     message: 'Not found',
   });
 
@@ -333,7 +328,7 @@ export default class ApiError extends Error {
    */
   static ERROR_500 = new ApiError({
     status: Status.INTERNAL_SERVER_ERROR,
-    code: 500,
+    code: Status.INTERNAL_SERVER_ERROR,
     message: 'Internal server error',
   });
 
