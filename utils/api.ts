@@ -1,5 +1,7 @@
+import ApiError, { Status } from './ApiError';
+import { NextApiRequest, NextApiResponse } from 'next';
+
 import { ApiResult } from '../interfaces/api';
-import { NextApiResponse } from 'next';
 import getConfig from 'next/config';
 import path from 'path';
 
@@ -40,3 +42,64 @@ export const response500 = (res: NextApiResponse) => {
   };
   res.status(200).json(result);
 };
+
+export default class Api {
+  constructor() {
+    this.get = this.get.bind(this);
+    this.post = this.post.bind(this);
+    this.put = this.put.bind(this);
+    this.delete = this.delete.bind(this);
+    this.handler = this.handler.bind(this);
+  }
+
+  async get(req: NextApiRequest, res: NextApiResponse) {
+    console.log('GET', req, res);
+    throw ApiError.ERROR_404;
+  }
+
+  async post(req: NextApiRequest, res: NextApiResponse) {
+    console.log('POST', req, res);
+    throw ApiError.ERROR_404;
+  }
+
+  async put(req: NextApiRequest, res: NextApiResponse) {
+    console.log('PUT', req, res);
+    throw ApiError.ERROR_404;
+  }
+
+  async delete(req: NextApiRequest, res: NextApiResponse) {
+    console.log('DELTEE', req, res);
+    throw ApiError.ERROR_404;
+  }
+
+  async handler(req: NextApiRequest, res: NextApiResponse) {
+    try {
+      switch (req.method) {
+        case 'GET':
+          await this.get(req, res);
+          break;
+        case 'POST':
+          await this.post(req, res);
+          break;
+        case 'PUT':
+          await this.put(req, res);
+          break;
+        case 'DELETE':
+          await this.delete(req, res);
+          break;
+        default:
+          throw ApiError.ERROR_404;
+      }
+    } catch (error) {
+      console.error(error);
+      const { status, message } = error;
+      if (status && message) {
+        return res.status(status).json({ message });
+      } else {
+        return res
+          .status(Status.INTERNAL_SERVER_ERROR)
+          .json({ message: 'Internal Server Error' });
+      }
+    }
+  }
+}
