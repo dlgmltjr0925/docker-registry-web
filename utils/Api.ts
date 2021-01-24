@@ -12,10 +12,6 @@ export const REGISTRY_FILE_PATH = path.join(
   'data/registry.json'
 );
 
-export const getRegistyUrl = (url: string, detail: string = '/') => {
-  return `https://${url}/v2${detail}`;
-};
-
 export const response400 = (res: NextApiResponse) => {
   const result: ApiResult = {
     status: 400,

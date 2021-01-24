@@ -1,7 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { config } from '@fortawesome/fontawesome-svg-core';
-
 export const getRegistyUrl = (url: string, path: string = '/') => {
   return `https://${url}/v2${path}`;
 };
@@ -27,8 +25,11 @@ export const getBase = async ({ host, authorization }: GetBaseArgs) => {
     if (authorization) configs['headers'] = { Authorization: authorization };
     const url = getRegistyUrl(host, '/');
     const res = await axios.get(url, configs);
-    console.log(res);
+    console.log('here', res);
+
+    return res;
   } catch (error) {
+    console.log('error', JSON.stringify(error, null, 2));
     throw error;
   }
 };
