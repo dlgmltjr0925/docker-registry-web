@@ -1,10 +1,11 @@
-import Api, { getRegistyUrl } from '../../../utils/api';
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
 
+import Api from '../../../utils/Api';
 import { Registry } from '../../../interfaces';
 import { Status } from '../../../utils/ApiError';
 import { getRegistries } from '../../../utils/database';
+import { getRegistyUrl } from '../../../utils/dockerRegistry';
 import { promiseAll } from '../../../utils/async';
 
 class RegistryApi extends Api {

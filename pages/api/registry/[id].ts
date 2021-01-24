@@ -1,15 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
 import { deleteRegistry, selectRegistryById } from '../../../utils/database';
-import {
-  getRegistyUrl,
-  response400,
-  response404,
-  response500,
-} from '../../../utils/api';
+import { response400, response404, response500 } from '../../../utils/Api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
+import { getRegistyUrl } from '../../../utils/dockerRegistry';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

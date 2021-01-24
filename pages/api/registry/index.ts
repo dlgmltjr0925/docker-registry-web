@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRegistyUrl, response404, response500 } from '../../../utils/api';
+import { response404, response500 } from '../../../utils/Api';
 
 import { ApiResult } from '../../../interfaces/api';
 import { Registry } from '../../../interfaces';
 import axios from 'axios';
+import { getRegistyUrl } from '../../../utils/dockerRegistry';
 import { insertRegistry } from '../../../utils/database';
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,14 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
-import {
-  getRegistyUrl,
-  response400,
-  response404,
-  response500,
-} from '../../../../utils/api';
+import { response400, response404, response500 } from '../../../../utils/Api';
 
 import { ApiResult } from '../../../../interfaces/api';
 import { Tag } from '../../../../interfaces';
+import { getRegistyUrl } from '../../../../utils/dockerRegistry';
 import { promiseAll } from '../../../../utils/async';
 import { selectRegistryById } from '../../../../utils/database';
 
