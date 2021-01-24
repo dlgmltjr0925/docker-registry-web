@@ -308,7 +308,7 @@ export default class ApiError extends Error {
   /**
    * 400 Error
    */
-  static ERROR_400 = new ApiError({
+  static BadRequest = new ApiError({
     status: Status.BAD_REQUEST,
     code: Status.BAD_REQUEST,
     message: 'Bad request',
@@ -317,7 +317,7 @@ export default class ApiError extends Error {
   /**
    * 404 Error
    */
-  static ERROR_404 = new ApiError({
+  static NotFound = new ApiError({
     status: Status.NOT_FOUND,
     code: Status.NOT_FOUND,
     message: 'Not found',
@@ -326,7 +326,7 @@ export default class ApiError extends Error {
   /**
    * 500 Error
    */
-  static ERROR_500 = new ApiError({
+  static InternalServerError = new ApiError({
     status: Status.INTERNAL_SERVER_ERROR,
     code: Status.INTERNAL_SERVER_ERROR,
     message: 'Internal server error',

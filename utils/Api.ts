@@ -50,22 +50,22 @@ export default class Api {
 
   async get(req: NextApiRequest, res: NextApiResponse) {
     console.log('GET', req, res);
-    throw ApiError.ERROR_404;
+    throw ApiError.NotFound;
   }
 
   async post(req: NextApiRequest, res: NextApiResponse) {
     console.log('POST', req, res);
-    throw ApiError.ERROR_404;
+    throw ApiError.NotFound;
   }
 
   async put(req: NextApiRequest, res: NextApiResponse) {
     console.log('PUT', req, res);
-    throw ApiError.ERROR_404;
+    throw ApiError.NotFound;
   }
 
   async delete(req: NextApiRequest, res: NextApiResponse) {
     console.log('DELTEE', req, res);
-    throw ApiError.ERROR_404;
+    throw ApiError.NotFound;
   }
 
   async handler(req: NextApiRequest, res: NextApiResponse) {
@@ -84,7 +84,7 @@ export default class Api {
           await this.delete(req, res);
           break;
         default:
-          throw ApiError.ERROR_404;
+          throw ApiError.NotFound;
       }
     } catch (error) {
       console.error(error);

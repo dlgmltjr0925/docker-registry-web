@@ -35,3 +35,6 @@ yarn-error.log*
 
 /data/*
 /data/registry.json
+
+__test__
+*.test.ts
