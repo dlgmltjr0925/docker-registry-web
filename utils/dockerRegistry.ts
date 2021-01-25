@@ -10,8 +10,12 @@ export const getRegistyUrl = (url: string, path: string = '/') => {
 const handleError = (error: any) => {
   if (/401/.test(error.message)) {
     throw DockerRegistryError.Unauthorized;
+  } else if (/403/.test(error.message)) {
+    throw ApiError.Forbidden;
   } else if (/404|ENOTFOUND/.test(error.message)) {
     throw ApiError.NotFound;
+  } else if (/429/.test(error.message)) {
+    throw ApiError.TooManyRequests;
   } else {
     throw ApiError.InternalServerError;
   }
@@ -32,7 +36,10 @@ interface GetBaseArgs {
  * Host: <registry host>
  * Authorization: <scheme> <token>
  */
-export const getBase = async ({ host, authorization }: GetBaseArgs) => {
+export const getBase = async ({
+  host,
+  authorization,
+}: GetBaseArgs): Promise<{} | undefined> => {
   try {
     const configs: AxiosRequestConfig = {};
     if (authorization) configs['headers'] = { Authorization: authorization };
@@ -77,6 +84,45 @@ export const getImages = async ({
     const url = getRegistyUrl(host, path);
     const res = await axios.get<{ repositories: string[] }>(url, configs);
     return res.data.repositories;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+/**
+ * GetTagsArgs
+ * host - docker registry hostname
+ * authorization - <scheme> <token> ex) Basic ZG9ja2VyOnJlZ2lzdHJ5
+ * name - Name of the target repository
+ */
+interface GetTagsArgs extends GetBaseArgs {
+  name: string;
+}
+
+/**
+ * GetTagsResponse
+ */
+interface GetTagsResponse {
+  name: string;
+  tags: string[];
+}
+
+/**
+ * GET /v2/<name>/tags/list
+ * Host: <registry host>
+ * Authorization: <scheme> <token>
+ */
+export const getTags = async ({
+  host,
+  authorization,
+  name,
+}: GetTagsArgs): Promise<GetTagsResponse | undefined> => {
+  try {
+    const configs: AxiosRequestConfig = {};
+    if (authorization) configs['headers'] = { Authorization: authorization };
+    const url = getRegistyUrl(host, `/${name}/tags/list`);
+    const res = await axios.get<{ name: string; tags: string[] }>(url, configs);
+    return res.data;
   } catch (error) {
     handleError(error);
   }

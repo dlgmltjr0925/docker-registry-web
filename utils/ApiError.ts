@@ -315,12 +315,30 @@ export default class ApiError extends Error {
   });
 
   /**
+   * 403 Error
+   */
+  static Forbidden = new ApiError({
+    status: Status.FORBIDDEN,
+    code: Status.FORBIDDEN,
+    message: 'Forbidden',
+  });
+
+  /**
    * 404 Error
    */
   static NotFound = new ApiError({
     status: Status.NOT_FOUND,
     code: Status.NOT_FOUND,
     message: 'Not found',
+  });
+
+  /**
+   * 429
+   */
+  static TooManyRequests = new ApiError({
+    status: Status.TOO_MANY_REQUESTS,
+    code: Status.TOO_MANY_REQUESTS,
+    message: 'Too many requests',
   });
 
   /**
