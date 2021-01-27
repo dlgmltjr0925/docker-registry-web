@@ -313,6 +313,14 @@ export default class ApiError extends Error {
     code: Status.BAD_REQUEST,
     message: 'Bad request',
   });
+  /**
+   * 401 Error
+   */
+  static Unauthorized = new ApiError({
+    status: Status.UNAUTHORIZED,
+    code: Status.UNAUTHORIZED,
+    message: 'Unauthorized',
+  });
 
   /**
    * 403 Error

@@ -1,19 +1,51 @@
+import DockerRegistryError, { ErrorCode } from './DockerRegistryError';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import ApiError from './ApiError';
-import DockerRegistryError from './DockerRegistryError';
 
 export const getRegistyUrl = (url: string, path: string = '/') => {
   return `https://${url}/v2${path}`;
 };
 
+interface Error {
+  code: keyof typeof ErrorCode;
+  message: string;
+  detail: unknown;
+}
+
+type Errors = Error[] | undefined;
+
 const handleError = (error: any) => {
+  const errors: Errors = error.response?.data?.errors;
+
   if (/401/.test(error.message)) {
-    throw DockerRegistryError.Unauthorized;
+    if (!errors) throw ApiError.Unauthorized;
+    for (let { code } of errors) {
+      switch (code) {
+        case 'UNAUTHORIZED':
+          throw DockerRegistryError.Unauthorized;
+      }
+    }
   } else if (/403/.test(error.message)) {
-    throw ApiError.Forbidden;
+    if (!errors) throw ApiError.Forbidden;
+    for (let { code } of errors) {
+      switch (code) {
+        case 'DENIED':
+          throw DockerRegistryError.Denied;
+      }
+    }
   } else if (/404|ENOTFOUND/.test(error.message)) {
-    throw ApiError.NotFound;
+    if (!errors) throw ApiError.NotFound;
+    for (let { code } of errors) {
+      switch (code) {
+        case 'NAME_UNKNOWN':
+          throw DockerRegistryError.NameUnknown;
+        case 'MANIFEST_UNKNOWN':
+          throw DockerRegistryError.ManifestUnknown;
+        case 'BLOB_UNKNOWN':
+          throw DockerRegistryError.BlobUnkown;
+      }
+    }
   } else if (/429/.test(error.message)) {
     throw ApiError.TooManyRequests;
   } else {
@@ -190,7 +222,7 @@ interface DistributionManifest {
 /**
  * GetTagsResponse
  */
-interface GetManifestsResponse extends Manifest {
+export interface GetManifestsResponse extends Manifest {
   digest: string;
 }
 
@@ -250,6 +282,40 @@ export const deleteManifests = async ({
     if (authorization) configs.headers = { Authorization: authorization };
     const url = getRegistyUrl(host, `/${name}/manifests/${digest}`);
     const res = await axios.delete<{}>(url, configs);
+    return res.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+/**
+ * GetTagsArgs
+ * host - docker registry hostname
+ * authorization - <scheme> <token> ex) Basic ZG9ja2VyOnJlZ2lzdHJ5
+ * name - Name of the target repository
+ * reference - Tag or digest of the target manifest
+ */
+interface GetBlobArgs extends GetBaseArgs {
+  name: string;
+  digest: string;
+}
+
+/**
+ * GET /v2/<name>/blobs/<digest>
+ * Host: <registry host>
+ * Authorization: <scheme> <token>
+ */
+export const getBlobs = async ({
+  host,
+  authorization,
+  name,
+  digest,
+}: GetBlobArgs) => {
+  try {
+    const configs: AxiosRequestConfig = {};
+    if (authorization) configs.headers = { Authorization: authorization };
+    const url = getRegistyUrl(host, `/${name}/blobs/${digest}`);
+    const res = await axios.get<string>(url, configs);
     return res.data;
   } catch (error) {
     handleError(error);
