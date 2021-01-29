@@ -34,6 +34,10 @@ const handleError = (error: any) => {
           throw DockerRegistryError.ManifestUnverified;
         case 'BLOB_UNKNOWN':
           throw DockerRegistryError.BlobUnkown;
+        case 'BLOB_UPLOAD_INVALID':
+          throw DockerRegistryError.BlobUploadInvalid;
+        case 'UNSUPPORTED':
+          throw DockerRegistryError.Unsupported;
       }
     }
   } else if (/401/.test(error.message)) {
