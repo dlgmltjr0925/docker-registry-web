@@ -18,7 +18,25 @@ type Errors = Error[] | undefined;
 const handleError = (error: any) => {
   const errors: Errors = error.response?.data?.errors;
 
-  if (/401/.test(error.message)) {
+  if (/400/.test(error.message)) {
+    if (!errors) throw ApiError.BadRequest;
+    for (let { code } of errors) {
+      switch (code) {
+        case 'NAME_INVALID':
+          throw DockerRegistryError.NameInvalid;
+        case 'TAG_INVALID':
+          throw DockerRegistryError.TagInvalid;
+        case 'DIGEST_INVALID':
+          throw DockerRegistryError.DigestInvalid;
+        case 'MANIFEST_INVALID':
+          throw DockerRegistryError.ManifestInvalid;
+        case 'MANIFEST_UNVERIFIED':
+          throw DockerRegistryError.ManifestUnverified;
+        case 'BLOB_UNKNOWN':
+          throw DockerRegistryError.BlobUnkown;
+      }
+    }
+  } else if (/401/.test(error.message)) {
     if (!errors) throw ApiError.Unauthorized;
     for (let { code } of errors) {
       switch (code) {
