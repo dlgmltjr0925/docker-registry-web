@@ -1,0 +1,19 @@
+FROM arm64v8/node:15.10.0-buster 
+MAINTAINER fine<dlgmltjr0925@gmail.com>
+
+EXPOSE 3000
+
+# STEP 1. Create Work directory
+RUN mkdir -p /docker-registry-ui
+
+# STEP 2. Change Work directory 
+WORKDIR /docker-registry-ui
+
+# STEP 3. Copy package info
+COPY package.json .
+
+# STEP 4. Get node_modules
+RUN yarn; exit 0
+
+# STEP 5. Run Server
+CMD ["yarn", "start"];
