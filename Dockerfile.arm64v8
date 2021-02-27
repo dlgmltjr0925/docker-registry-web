@@ -1,4 +1,4 @@
-FROM arm64v8/node:15.10.0-buster 
+FROM arm64v8/node:lts-buster 
 MAINTAINER fine<dlgmltjr0925@gmail.com>
 
 EXPOSE 3000
@@ -11,6 +11,7 @@ WORKDIR /docker-registry-ui
 
 # STEP 3. Copy package info
 COPY package.json .
+COPY .next .
 
 # STEP 4. Get node_modules
 RUN yarn; exit 0
