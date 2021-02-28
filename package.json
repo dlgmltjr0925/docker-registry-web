@@ -2,7 +2,6 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "./scripts/prepare.sh",
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "dev": "next dev",
     "build": "next build",
