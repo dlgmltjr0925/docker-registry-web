@@ -1,6 +1,8 @@
 FROM arm64v8/node:lts-buster 
 MAINTAINER fine<dlgmltjr0925@gmail.com>
 
+RUN apt-get update && apt-get install -y glib2.0-dev libvips-dev
+
 EXPOSE 3000
 
 # STEP 1. Create Work directory
