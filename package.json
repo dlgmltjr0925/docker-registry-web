@@ -2,10 +2,10 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
+    "prepare": "sh ./scripts/prepare.sh",
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "dev": "next dev",
     "build": "next build",
-    "prestart": "yarn prepare",
     "start": "next start",
     "tsc": "tsc",
     "test": "jest"
