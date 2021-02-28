@@ -12,12 +12,7 @@ RUN mkdir -p /docker-registry-ui
 WORKDIR /docker-registry-ui
 
 # STEP 3. Copy package info
-COPY data .
-COPY .next .
-COPY package.json .
-
-# STEP 4. Get node_modules
-ENTRYPOINT yarn; exit 0
+COPY . .
 
 # STEP 5. Run Server
 CMD ["yarn", "start"];
