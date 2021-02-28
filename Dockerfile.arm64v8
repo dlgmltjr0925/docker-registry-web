@@ -14,7 +14,7 @@ COPY package.json .
 COPY .next .
 
 # STEP 4. Get node_modules
-RUN yarn; exit 0
+ENTRYPOINT yarn; exit 0
 
 # STEP 5. Run Server
 CMD ["yarn", "start"];
