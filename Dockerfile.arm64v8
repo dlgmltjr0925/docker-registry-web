@@ -3,14 +3,14 @@ MAINTAINER fine<dlgmltjr0925@gmail.com>
 
 EXPOSE 3000
 
-# STEP 1. Create Work directory
+# Create Work directory
 RUN mkdir -p /docker-registry-ui
 
-# STEP 2. Change Work directory 
+# Change Work directory 
 WORKDIR /docker-registry-ui
 
-# STEP 3. Copy package info
+# Copy package info
 COPY . .
 
-# STEP 5. Run Server
+# Run Server
 CMD ["yarn", "start"];
