@@ -116,17 +116,17 @@ export const selectRegistryById = (id: number) => {
 
 export const deleteRegistry = (id: number) => {
   return new Promise<boolean>((resolve, reject) => {
-    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
-    const db = new Database(DB_FILE_PATH);
-    db.run(
-      'UPDATE registry SET updated_at=?, deleted_at=? WHERE id=?',
-      [now, now, id],
-      (err) => {
-        if (err) reject(err);
-        resolve(true);
-      }
-    );
-    db.close();
+    try {
+      const localStorage = getLocalStorage();
+      const registry = localStorage['registry'];
+      registry.values = registry.values.filter((item) => item.id !== id);
+
+      saveLocalStorage(localStorage);
+
+      resolve(true);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
