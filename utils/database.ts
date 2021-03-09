@@ -1,6 +1,8 @@
-import { Image, Registry } from '../interfaces';
-
+import { Image } from '../interfaces';
+import Joi from 'joi';
+import { Registry } from '../schema/registry';
 import dateFormat from 'dateformat';
+import fs from 'fs';
 import getConfig from 'next/config';
 import path from 'path';
 import sqlite3 from 'sqlite3';
@@ -11,38 +13,89 @@ export const DB_FILE_PATH = path.join(
   'data/docker-registry-ui.db'
 );
 
+export const STORAGE_FILE_PATH = path.join(
+  serverRuntimeConfig.PROJECT_ROOT,
+  'data/docker-registry-ui.json'
+);
+
 const { Database } = sqlite3.verbose();
+
+interface Table<T> {
+  seq: number;
+  values: Array<T>;
+}
+
+type LocalStorage<T> = Record<string, Table<T>>;
+
+let localStorage: null | LocalStorage<any> = null;
+
+const getLocalStorage = <T = any>(): LocalStorage<T> => {
+  if (!localStorage) {
+    localStorage = JSON.parse(
+      fs.readFileSync(STORAGE_FILE_PATH, 'utf-8')
+    ) as LocalStorage<T>;
+  }
+
+  return localStorage;
+};
+
+// const getTable = <T = any>(tableName: string): Table<T> => {
+//   const localStorage = getLocalStorage() as LocalStorage<T>;
+//   return localStorage[tableName];
+// };
+
+const saveLocalStorage = <T>(data: LocalStorage<T>): void => {
+  try {
+    fs.writeFileSync(STORAGE_FILE_PATH, JSON.stringify(data, null, 2), {
+      encoding: 'utf-8',
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export interface InsertRegistryArgs {
+  name: string;
+  url: string;
+  token?: string;
+}
+
+const insertRegistryInput = Joi.object({
+  name: Joi.string().required(),
+  url: Joi.string().required(),
+  token: Joi.string(),
+});
 
 /**
  * Registry
  */
-type InsertRegistryArgs = Omit<Registry, 'id'>;
 export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
   return new Promise<Registry>((resolve, reject) => {
-    const db = new Database(DB_FILE_PATH);
-    db.run(
-      'INSERT INTO registry (name, url, token) VALUES (?, ?, ?)',
-      [name, url, token || null],
-      (err) => {
-        if (err) reject(err);
-      }
-    );
-    db.get(
-      'SELECT id FROM registry WHERE name=? AND url=? AND token=? ORDER BY id DESC;',
-      [name, url, token || null],
-      (err, row) => {
-        if (err) reject(err);
-        if (row) {
-          resolve({
-            id: row.id,
-            name,
-            url,
-            token,
-          });
-        }
-      }
-    );
-    db.close();
+    try {
+      const { error } = insertRegistryInput.validate({ name, url, token });
+
+      if (error) throw error;
+
+      const localStorage = getLocalStorage<Registry>();
+      const registry = localStorage['registry'];
+
+      const newRegistry: Registry = {
+        id: ++registry.seq,
+        name,
+        url,
+        token,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+
+      registry.values.push(newRegistry);
+
+      saveLocalStorage(localStorage);
+
+      resolve(newRegistry);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 

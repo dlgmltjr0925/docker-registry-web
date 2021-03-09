@@ -1,11 +1,11 @@
+import { InsertRegistryArgs, insertRegistry } from '../../../utils/database';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { response404, response500 } from '../../../utils/Api';
 
 import { ApiResult } from '../../../interfaces/api';
-import { Registry } from '../../../interfaces';
+import { Registry } from '../../../schema/registry';
 import axios from 'axios';
 import { getRegistyUrl } from '../../../utils/dockerRegistry';
-import { insertRegistry } from '../../../utils/database';
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const { name, url } = req.body;
@@ -19,12 +19,12 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (authorization) headers.authorization = authorization;
 
-    const result = await axios.get(registryUrl + '/', {
+    const result = await axios.get(registryUrl, {
       headers,
     });
 
     if (result && result.status === 200) {
-      const registry: Omit<Registry, 'id'> = { name, url };
+      const registry: InsertRegistryArgs = { name, url };
       if (authorization) registry.token = authorization.split(' ')[1];
 
       const newRegistry = await insertRegistry(registry);
