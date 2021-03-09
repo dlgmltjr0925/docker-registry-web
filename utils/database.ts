@@ -39,10 +39,10 @@ const getLocalStorage = <T = any>(): LocalStorage<T> => {
   return localStorage;
 };
 
-// const getTable = <T = any>(tableName: string): Table<T> => {
-//   const localStorage = getLocalStorage() as LocalStorage<T>;
-//   return localStorage[tableName];
-// };
+const getTable = <T = any>(tableName: string): Table<T> => {
+  const localStorage = getLocalStorage() as LocalStorage<T>;
+  return localStorage[tableName];
+};
 
 const saveLocalStorage = <T>(data: LocalStorage<T>): void => {
   try {
@@ -132,12 +132,12 @@ export const deleteRegistry = (id: number) => {
 
 export const getRegistries = () => {
   return new Promise<Registry[]>((resolve, reject) => {
-    const db = new Database(DB_FILE_PATH);
-    db.all('SELECT * FROM registry WHERE deleted_at IS NULL;', (err, rows) => {
-      if (err) reject(err);
-      resolve(rows);
-    });
-    db.close();
+    try {
+      const registry = getTable<Registry>('registry');
+      resolve(registry.values);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 

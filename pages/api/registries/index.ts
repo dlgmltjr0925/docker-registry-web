@@ -11,12 +11,10 @@ import { promiseAll } from '../../../utils/async';
 class RegistryApi extends Api {
   async get(_: NextApiRequest, res: NextApiResponse) {
     try {
-      const rows = await getRegistries();
-
-      const checkedDate = new Date().toString();
+      const results = await getRegistries();
 
       const registries = (await promiseAll(
-        rows.map(async (registry) => {
+        results.map(async (registry) => {
           const { url, token } = registry;
           try {
             const registryUrl = getRegistyUrl(url, '/_catalog');
@@ -36,7 +34,7 @@ class RegistryApi extends Api {
               return {
                 ...registry,
                 images,
-                checkedDate,
+                checkedDate: new Date().toString(),
                 status: true,
               };
             }
@@ -44,7 +42,7 @@ class RegistryApi extends Api {
             console.error(error);
             return {
               ...registry,
-              checkedDate,
+              checkedDate: new Date().toString(),
               status: false,
             };
           }
