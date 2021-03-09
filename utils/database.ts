@@ -101,16 +101,13 @@ export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
 
 export const selectRegistryById = (id: number) => {
   return new Promise<Registry | null>((resolve, reject) => {
-    const db = new Database(DB_FILE_PATH);
-    db.get('SELECT * FROM registry WHERE id=?;', [id], (err, row) => {
-      if (err) reject(err);
-      if (row) {
-        resolve(row);
-      } else {
-        resolve(null);
-      }
-    });
-    db.close();
+    try {
+      const registry = getTable<Registry>('registry');
+      const result = registry.values.find((item) => item.id === id);
+      resolve(result || null);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
