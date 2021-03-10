@@ -1,8 +1,6 @@
 FROM arm64v8/node:lts-alpine 
 MAINTAINER fine<dlgmltjr0925@gmail.com>
 
-RUN yarn global add next
-
 EXPOSE 3000
 
 # Create Work directory
