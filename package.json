@@ -9,7 +9,7 @@
     "start": "next start",
     "tsc": "tsc",
     "test": "jest",
-    "entrypoint": "sh ./scripts/build.sh"
+    "entrypoint": "sh ./scripts/entrypoint.sh"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
