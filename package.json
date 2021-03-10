@@ -1,5 +1,5 @@
 {
-  "name": "with-typescript",
+  "name": "docker-registry-ui",
   "version": "1.0.0",
   "scripts": {
     "prepare": "sh ./scripts/prepare.sh",
@@ -25,7 +25,6 @@
     "react-dom": "^17.0.1",
     "react-markdown": "^5.0.3",
     "remark-gfm": "^1.0.0",
-    "sqlite3": "^5.0.1",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -37,7 +36,6 @@
     "@types/node": "^12.12.21",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@types/sqlite3": "^3.1.6",
     "@types/styled-components": "^5.1.7",
     "babel-jest": "^26.6.3",
     "jest": "^26.6.3",
