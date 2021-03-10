@@ -1,16 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
   deleteImageByIdAndName,
   insertImageByIdAndName,
   selectImageByIdAndName,
   selectRegistryById,
   updateImageByIdAndName,
-} from '../../../../utils/database';
+} from '../../../../utils/localStorage';
 import { response400, response404, response500 } from '../../../../utils/Api';
 
 import { ApiResult } from '../../../../interfaces/api';
-import { Image } from '../../../../interfaces';
 import { getRegistyUrl } from '../../../../utils/dockerRegistry';
 import { promiseAll } from '../../../../utils/async';
 
@@ -45,14 +44,9 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     const config: AxiosRequestConfig = { headers: {} };
     if (token) config.headers['Authorization'] = `Basic ${token}`;
 
-    const promise1 = axios.get(registryUrl, config);
+    const response = await axios.get(registryUrl, config);
 
-    const promise2 = selectImageByIdAndName({ registryId, name });
-
-    let [response, image] = (await promiseAll([promise1, promise2])) as [
-      AxiosResponse<{ repositories: string[] }>,
-      Image | null
-    ];
+    let image = await selectImageByIdAndName({ registryId, name });
 
     if (!response || !response.data || !response.data.repositories)
       return response400(res);

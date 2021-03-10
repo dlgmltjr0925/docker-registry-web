@@ -1,24 +1,16 @@
 import { Image } from '../schema/image';
 import Joi from 'joi';
 import { Registry } from '../schema/registry';
-import dateFormat from 'dateformat';
 import fs from 'fs';
 import getConfig from 'next/config';
 import path from 'path';
-import sqlite3 from 'sqlite3';
 
 const { serverRuntimeConfig } = getConfig();
-export const DB_FILE_PATH = path.join(
-  serverRuntimeConfig.PROJECT_ROOT,
-  'data/docker-registry-ui.db'
-);
 
 export const STORAGE_FILE_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
   'data/docker-registry-ui.json'
 );
-
-const { Database } = sqlite3.verbose();
 
 interface Table<T> {
   seq: number;
@@ -84,8 +76,8 @@ export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
         name,
         url,
         token,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       registry.values.push(newRegistry);
@@ -165,10 +157,10 @@ export const insertImageByIdAndName = ({
 
       const newImage: Image = {
         id: ++image.seq,
-        registry_id: registryId,
+        registryId: registryId,
         name,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       image.values.push(newImage);
@@ -194,7 +186,7 @@ export const selectImageByIdAndName = ({
       const image = getTable<Image>('image');
 
       const result = image.values.find(
-        (item) => item.registry_id === registryId && item.name === name
+        (item) => item.registryId === registryId && item.name === name
       );
 
       resolve(result || null);
@@ -232,12 +224,12 @@ export const updateImageByIdAndName = ({
       const image = localStorage['image'] as Table<Image>;
 
       const index = image.values.findIndex(
-        (item) => item.registry_id === registryId && item.name
+        (item) => item.registryId === registryId && item.name
       );
 
       if (index === -1) return resolve(null);
 
-      image.values[index].source_repository_url = repositoryUrl;
+      image.values[index].sourceRepositoryUrl = repositoryUrl;
 
       saveLocalStorage(localStorage);
 
@@ -264,7 +256,7 @@ export const deleteImageByIdAndName = ({
       const image = localStorage['image'] as Table<Image>;
 
       image.values = image.values.filter(
-        (item) => !(item.registry_id === registryId && item.name === name)
+        (item) => !(item.registryId === registryId && item.name === name)
       );
 
       saveLocalStorage(localStorage);

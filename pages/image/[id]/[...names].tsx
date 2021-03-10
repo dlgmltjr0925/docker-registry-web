@@ -132,7 +132,7 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
 
   const _getContent = useCallback(async () => {
     try {
-      let url = image.sourceRepositryUrl;
+      let url = image.sourceRepositoryUrl;
       if (!url) return;
 
       if (/github.com/.test(url)) {
@@ -153,7 +153,7 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
     } catch (error) {
       console.log(error);
     }
-  }, [setContent, image.sourceRepositryUrl]);
+  }, [setContent, image.sourceRepositoryUrl]);
 
   const pullCommand = useMemo<string | null>(() => {
     if (tags.length === 0) return null;
@@ -178,7 +178,7 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
   useEffect(() => {
     setContent(null);
     _getContent();
-  }, [image.sourceRepositryUrl]);
+  }, [image.sourceRepositoryUrl]);
 
   return (
     <Wrapper>

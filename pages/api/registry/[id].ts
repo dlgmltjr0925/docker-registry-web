@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
-import { deleteRegistry, selectRegistryById } from '../../../utils/database';
+import {
+  deleteRegistry,
+  selectRegistryById,
+} from '../../../utils/localStorage';
 import { response400, response404, response500 } from '../../../utils/Api';
 
 import { ApiResult } from '../../../interfaces/api';

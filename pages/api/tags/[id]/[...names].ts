@@ -6,7 +6,7 @@ import { ApiResult } from '../../../../interfaces/api';
 import { Tag } from '../../../../interfaces';
 import { getRegistyUrl } from '../../../../utils/dockerRegistry';
 import { promiseAll } from '../../../../utils/async';
-import { selectRegistryById } from '../../../../utils/database';
+import { selectRegistryById } from '../../../../utils/localStorage';
 
 interface ImageTags {
   name: string;

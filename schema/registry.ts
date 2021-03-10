@@ -5,8 +5,8 @@ export interface Registry {
   name: string;
   url: string;
   token?: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const registryObject = Joi.object({
@@ -14,6 +14,6 @@ export const registryObject = Joi.object({
   name: Joi.string().required(),
   url: Joi.string().required(),
   token: Joi.string(),
-  created_at: Joi.date().required(),
-  updated_at: Joi.date().required(),
+  createdAt: Joi.date().required(),
+  updatedAt: Joi.date().required(),
 });

@@ -96,7 +96,7 @@ const Edit = ({ image }: EditProps) => {
   const name = names.join('/');
 
   const [repositoryUrl, setRepositoryUrl] = useState<string>(
-    image?.sourceRepositryUrl || ''
+    image?.sourceRepositoryUrl || ''
   );
   const { isUploading, setRepository } = useSetImage({ registryId, name });
 

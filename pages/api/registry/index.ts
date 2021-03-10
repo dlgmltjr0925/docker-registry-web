@@ -1,4 +1,7 @@
-import { InsertRegistryArgs, insertRegistry } from '../../../utils/database';
+import {
+  InsertRegistryArgs,
+  insertRegistry,
+} from '../../../utils/localStorage';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { response404, response500 } from '../../../utils/Api';
 

@@ -17,7 +17,7 @@ export interface Image {
   id?: number;
   registryId?: number;
   name: string;
-  sourceRepositryUrl?: string;
+  sourceRepositoryUrl?: string;
 }
 export interface Registry {
   id: number;
