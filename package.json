@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "tsc": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "entrypoint": "sh ./scripts/build.sh"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
