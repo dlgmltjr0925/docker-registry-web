@@ -1,6 +1,8 @@
 FROM arm64v8/node:lts-alpine 
 MAINTAINER fine<dlgmltjr0925@gmail.com>
 
+RUN yarn global add next
+
 EXPOSE 3000
 
 # Create Work directory
@@ -12,8 +14,7 @@ WORKDIR /docker-registry-ui
 # Copy package info
 COPY . .
 
-ENTRYPOINT ["yarn"];
-ENTRYPOINT ["yarn", "build"];
+ENTRYPOINT ["yarn", "entrypoint"]
 
 # Run Server
-CMD ["yarn", "start"];
+CMD ["yarn", "start"]
