@@ -57,7 +57,7 @@ export const getLayoutInfo = ({
       layoutInfo.sideTabs = [{ type: 'images' }];
       break;
     case '/image/[id]/[...names]':
-      name = getName(names);
+      name = getName(names as string | string[]);
 
       layoutInfo.title = 'Image';
       layoutInfo.subtitles = [
@@ -67,7 +67,7 @@ export const getLayoutInfo = ({
       layoutInfo.sideTabs = [{ type: 'image', options: { name } }];
       break;
     case '/tags/[id]/[...names]':
-      name = getName(names);
+      name = getName(names as string | string[]);
 
       layoutInfo.title = 'Tags';
       layoutInfo.subtitles = [
