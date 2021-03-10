@@ -1,4 +1,4 @@
-import { Image } from '../interfaces';
+import { Image } from '../schema/image';
 import Joi from 'joi';
 import { Registry } from '../schema/registry';
 import dateFormat from 'dateformat';
@@ -145,29 +145,40 @@ interface ImageByIdAndNameArgs {
   registryId: number;
   name: string;
 }
+
+const imageByIdAndNameInput = Joi.object({
+  registryId: Joi.number().required(),
+  name: Joi.string().required(),
+});
+
 export const insertImageByIdAndName = ({
   registryId,
   name,
 }: ImageByIdAndNameArgs) => {
   return new Promise<Image>((resolve, reject) => {
-    const db = new Database(DB_FILE_PATH);
-    db.run(
-      'INSERT INTO image (registry_id, name) VALUES (?, ?)',
-      [registryId, name],
-      (err) => {
-        if (err) reject(err);
-      }
-    );
-    db.get(
-      'SELECT * FROM image WHERE registry_id=? AND name=? ORDER BY id DESC;',
-      [registryId, name],
-      (err, row) => {
-        if (err) reject(err);
-        if (row)
-          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
-      }
-    );
-    db.close();
+    try {
+      const { error } = imageByIdAndNameInput.validate({ registryId, name });
+      if (error) throw error;
+
+      const localStorage = getLocalStorage();
+      const image = localStorage['image'] as Table<Image>;
+
+      const newImage: Image = {
+        id: ++image.seq,
+        registry_id: registryId,
+        name,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+
+      image.values.push(newImage);
+
+      saveLocalStorage(localStorage);
+
+      resolve(newImage);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
@@ -176,20 +187,20 @@ export const selectImageByIdAndName = ({
   name,
 }: ImageByIdAndNameArgs) => {
   return new Promise<Image | null>((resolve, reject) => {
-    const db = new Database(DB_FILE_PATH);
-    db.get(
-      'SELECT * FROM image WHERE registry_id=? AND name=? AND deleted_at IS NULL;',
-      [registryId, name],
-      (err, row) => {
-        if (err) reject(err);
-        if (row) {
-          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
-        } else {
-          resolve(null);
-        }
-      }
-    );
-    db.close();
+    try {
+      const { error } = imageByIdAndNameInput.validate({ registryId, name });
+      if (error) throw error;
+
+      const image = getTable<Image>('image');
+
+      const result = image.values.find(
+        (item) => item.registry_id === registryId && item.name === name
+      );
+
+      resolve(result || null);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
@@ -197,39 +208,43 @@ interface UpdateImageByIdAndNameArgs extends ImageByIdAndNameArgs {
   repositoryUrl: string;
 }
 
+const updateImageByIdAndNameInput = Joi.object({
+  registryId: Joi.number().required(),
+  name: Joi.string().required(),
+  repositoryUrl: Joi.string(),
+});
+
 export const updateImageByIdAndName = ({
   registryId,
   name,
   repositoryUrl,
 }: UpdateImageByIdAndNameArgs) => {
   return new Promise<Image | null>((resolve, reject) => {
-    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
-    const db = new Database(DB_FILE_PATH);
+    try {
+      const { error } = updateImageByIdAndNameInput.validate({
+        registryId,
+        name,
+        repositoryUrl,
+      });
+      if (error) throw error;
 
-    db.run(
-      `UPDATE image 
-      SET source_repository_url=?, updated_at=? 
-      WHERE registry_id=? AND name=? AND deleted_at IS NULL;`,
-      [repositoryUrl, now, registryId, name],
-      (err) => {
-        if (err) reject(err);
-      }
-    );
+      const localStorage = getLocalStorage();
+      const image = localStorage['image'] as Table<Image>;
 
-    db.get(
-      `SELECT * FROM image 
-      WHERE registry_id=? AND name=? AND deleted_at IS NULL
-      ORDER BY id DESC;`,
-      [registryId, name],
-      (err, row) => {
-        console.log(err);
-        if (err) reject(err);
-        if (row)
-          resolve({ ...row, sourceRepositryUrl: row.source_repository_url });
-        else resolve(null);
-      }
-    );
-    db.close();
+      const index = image.values.findIndex(
+        (item) => item.registry_id === registryId && item.name
+      );
+
+      if (index === -1) return resolve(null);
+
+      image.values[index].source_repository_url = repositoryUrl;
+
+      saveLocalStorage(localStorage);
+
+      resolve(image.values[index]);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
@@ -238,16 +253,25 @@ export const deleteImageByIdAndName = ({
   name,
 }: ImageByIdAndNameArgs) => {
   return new Promise<boolean>((resolve, reject) => {
-    const now = dateFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
-    const db = new Database(DB_FILE_PATH);
-    db.run(
-      'UPDATE image SET deleted_at=? WHERE registry_id=? AND name=? AND deleted_at IS NULL;',
-      [now, registryId, name],
-      (err) => {
-        if (err) reject(err);
-        resolve(true);
-      }
-    );
-    db.close();
+    try {
+      const { error } = imageByIdAndNameInput.validate({
+        registryId,
+        name,
+      });
+      if (error) throw error;
+
+      const localStorage = getLocalStorage();
+      const image = localStorage['image'] as Table<Image>;
+
+      image.values = image.values.filter(
+        (item) => !(item.registry_id === registryId && item.name === name)
+      );
+
+      saveLocalStorage(localStorage);
+
+      resolve(true);
+    } catch (error) {
+      reject(error);
+    }
   });
 };

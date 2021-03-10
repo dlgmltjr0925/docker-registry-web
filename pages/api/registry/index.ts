@@ -13,7 +13,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const { authorization } = req.headers;
 
   try {
-    let registryUrl = getRegistyUrl(url);
+    let registryUrl = getRegistyUrl(url, '/');
 
     const headers: { authorization?: string } = {};
 
