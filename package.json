@@ -12,11 +12,11 @@
     "entrypoint": "sh ./scripts/entrypoint.sh"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "axios": "^0.21.1",
-    "babel-plugin-inline-react-svg": "^2.0.1",
+    "babel-plugin-inline-react-svg": "^1.1.2",
     "babel-plugin-styled-components": "^1.12.0",
     "dateformat": "^4.5.1",
     "github-markdown-css": "^4.0.0",
