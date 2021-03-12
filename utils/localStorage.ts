@@ -9,7 +9,7 @@ const { serverRuntimeConfig } = getConfig();
 
 export const STORAGE_FILE_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
-  'data/docker-registry-ui.json'
+  'data/docker-registry-web.json'
 );
 
 interface Table<T> {

@@ -1,5 +1,5 @@
 {
-  "name": "docker-registry-ui",
+  "name": "docker-registry-web",
   "version": "1.0.0",
   "scripts": {
     "prepare": "sh ./scripts/prepare.sh",
