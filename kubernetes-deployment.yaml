@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: docker-registry-ui
-          image: docker-registry.mazzeom.com/docker-registry-ui:latest
+          image: dlgmltjr0925/docker-registry-ui:latest
           ports:
             - containerPort: 3000
