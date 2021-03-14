@@ -13,8 +13,6 @@ WORKDIR /docker-registry-web
 # Copy package info
 COPY . .
 
-RUN yarn
-
 ENTRYPOINT ["yarn", "entrypoint"]
 
 # Run Server
