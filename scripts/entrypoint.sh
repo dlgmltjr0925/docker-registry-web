@@ -1,3 +1,4 @@
 #!/bin/sh
-yarn
+yarn 
 yarn build
+yarn start
