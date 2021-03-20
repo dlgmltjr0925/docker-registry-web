@@ -1,5 +1,0 @@
-FROM arm64v8/node:lts-alpine
-
-EXPOSE 3000 
-
-CMD ["yarn", "start"]
