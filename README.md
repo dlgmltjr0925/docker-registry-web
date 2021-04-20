@@ -1,4 +1,4 @@
-# Docker Registry Web
+# Docker Registry UI
 
 This is a web project that can manage a private docker registry.
 
