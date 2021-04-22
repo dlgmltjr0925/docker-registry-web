@@ -24,3 +24,7 @@ docker run -d -p 3000:3000 --name docker-registry-web dlgmltjr0925/docker-regist
 ```
 kubectl apply -f https://raw.githubusercontent.com/dlgmltjr0925/docker-registry-web/master/kubernetes-deployment.yaml
 ```
+
+#### TODO
+
+1. Remove blob files
