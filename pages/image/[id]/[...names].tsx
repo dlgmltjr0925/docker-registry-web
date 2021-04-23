@@ -123,6 +123,9 @@ const ImagePage = ({ registry, image, tags }: ImagePageProps) => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log('registry', registry);
+    console.log('image', image);
+    console.log('tags', tags);
     if (!registry || !image || !tags) router.push('/');
   }, [registry, image]);
 
