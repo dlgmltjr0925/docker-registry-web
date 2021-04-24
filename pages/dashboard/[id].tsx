@@ -96,13 +96,17 @@ export const getServerSideProps = async ({
 }: GetServerSidePropsContext) => {
   const props: Partial<DashboardProps> = {};
 
-  const result = await axios.get<ApiResult<Registry>>(
-    `http://${process.env.host}:${process.env.port}/api/registry/${id}`
-  );
+  try {
+    const result = await axios.get<ApiResult<Registry>>(
+      `http://${process.env.host}:${process.env.port}/api/registry/${id}`
+    );
 
-  if (result && result.data) {
-    const { status, data } = result.data;
-    if (status === 200) props['registry'] = data;
+    if (result && result.data) {
+      const { status, data } = result.data;
+      if (status === 200) props['registry'] = data;
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   return {

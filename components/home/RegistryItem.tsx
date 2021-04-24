@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Registry } from '../../interfaces';
 import dateFormat from 'dateformat';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 interface RegistryItemProps {
   item: Registry;
@@ -100,13 +101,12 @@ const RegistryWrapper = styled.li<RegistryWrapperProps>`
       }
 
       .images-wrapper {
-        margin-top: 10px;
-
         li {
           display: inline-block;
           padding: 4px 7px;
           background: #286090;
           margin-right: 10px;
+          margin-top: 10px;
           border-radius: 3px;
           color: #fff;
           font-size: 13px;
@@ -148,6 +148,7 @@ const RegistryWrapper = styled.li<RegistryWrapperProps>`
 
 const RegistryItem = ({ item, onClickRemove }: RegistryItemProps) => {
   const { id, name, url, images = [], status = false, checkedDate } = item;
+  const router = useRouter();
 
   const date = useMemo(() => {
     if (!checkedDate) return '';
@@ -164,45 +165,47 @@ const RegistryItem = ({ item, onClickRemove }: RegistryItemProps) => {
     [onClickRemove]
   );
 
+  const _handleClick = useCallback(() => {
+    if (status) router.push(`/dashboard/${id}`);
+  }, []);
+
   return (
-    <Link href={`/dashboard/${id}`}>
-      <RegistryWrapper status={status}>
-        <div className='item-wrapper'>
-          <ImageDockerRegistry className='image' />
-          <div className='content-wrapper'>
-            <div className='name-wrapper'>
-              <span className='name'>{name}</span>
-              <span className='status'>{status ? 'up' : 'down'}</span>
-              <span className='date'>{date}</span>
-            </div>
-            <div className='summary-wrapper'>
-              <span className='url'>{url}</span>
-              <span className='image-wrapper'>
-                <IconCubes />
-                {images.length}
-              </span>
-            </div>
-            <div className='images-wrapper'>
-              <ul>
-                {images.map(({ name }) => {
-                  const url = `/image/${id}/${name}`;
-                  return (
-                    <li key={name} className=''>
-                      <Link href={url}>
-                        <span>{name}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+    <RegistryWrapper status={status} onClick={_handleClick}>
+      <div className='item-wrapper'>
+        <ImageDockerRegistry className='image' />
+        <div className='content-wrapper'>
+          <div className='name-wrapper'>
+            <span className='name'>{name}</span>
+            <span className='status'>{status ? 'up' : 'down'}</span>
+            <span className='date'>{date}</span>
+          </div>
+          <div className='summary-wrapper'>
+            <span className='url'>{url}</span>
+            <span className='image-wrapper'>
+              <IconCubes />
+              {images.length}
+            </span>
+          </div>
+          <div className='images-wrapper'>
+            <ul>
+              {images.map(({ name }) => {
+                const url = `/image/${id}/${name}`;
+                return (
+                  <li key={name} className=''>
+                    <Link href={url}>
+                      <span>{name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
-        <button className='remove-button' onClick={_handlePressRemove}>
-          <IconTrash />
-        </button>
-      </RegistryWrapper>
-    </Link>
+      </div>
+      <button className='remove-button' onClick={_handlePressRemove}>
+        <IconTrash />
+      </button>
+    </RegistryWrapper>
   );
 };
 

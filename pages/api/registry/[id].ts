@@ -1,3 +1,4 @@
+import { Image, Registry } from '../../../interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosRequestConfig } from 'axios';
 import {
@@ -7,8 +8,8 @@ import {
 import { response400, response404, response500 } from '../../../utils/Api';
 
 import { ApiResult } from '../../../interfaces/api';
-import { Registry } from '../../../interfaces';
 import { getRegistyUrl } from '../../../utils/dockerRegistry';
+import { promiseAll } from '../../../utils/async';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -42,8 +43,34 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
       const { repositories } = axiosResponse.data;
       result.data.images = repositories.map((name: string) => ({
         name,
+        tags: [],
       }));
       result.data.status = true;
+    }
+
+    if (result.data.images && result.data.images.length > 0) {
+      await promiseAll(
+        result.data.images.map(
+          async ({ name }: Image, index: number): Promise<void> => {
+            try {
+              const tagsUrl = getRegistyUrl(url, `/${name}/tags/list`);
+              const res = await axios.get(tagsUrl, config);
+              if (res && res.data) {
+                const tags =
+                  res.data.tags === null
+                    ? []
+                    : res.data.tags.map((tag: string) => ({ name: tag }));
+                (result.data.images as Image[])[index].tags = tags;
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        )
+      );
+      result.data.images = result.data.images.filter(
+        ({ tags }) => tags && tags.length > 0
+      );
     }
 
     res.status(200).json(result);

@@ -18,6 +18,7 @@ export interface Image {
   registryId?: number;
   name: string;
   sourceRepositoryUrl?: string;
+  tags?: Tag[];
 }
 export interface Registry {
   id: number;

@@ -321,7 +321,7 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
               </div>
             </Link>
             <ul className='image-wrapper'>
-              {registry.images?.map(({ name }) => {
+              {registry.images?.map(({ name, tags }) => {
                 const visible =
                   _getActiveClass({
                     type: 'image',
