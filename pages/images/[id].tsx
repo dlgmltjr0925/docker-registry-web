@@ -7,7 +7,6 @@ import { GetServerSidePropsContext } from 'next';
 import IconCubes from '../../public/images/icon_cubes.svg';
 import IconSearch from '../../public/images/icon_search.svg';
 import axios from 'axios';
-import { promiseAll } from '../../utils/async';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -56,9 +55,8 @@ const Wrapper = styled.div<WrapperProps>`
 
 const Images = ({ registry, ...props }: ImagesProps) => {
   const router = useRouter();
-  const [images] = useState<Image[]>(registry?.images || []);
-  const [tags, setTags] = useState<Record<string, Tag[]>>(props.tags || {});
   const [keyword, setKeyword] = useState<string>('');
+  const [images, setImages] = useState<Image[]>(registry?.images || []);
 
   const _handleChangeKeyword = useCallback(
     ({ target: { value } }) => {
@@ -76,8 +74,9 @@ const Images = ({ registry, ...props }: ImagesProps) => {
         .split(' ')
         .map((keyword) => new RegExp(keyword));
 
-      return images.filter(({ name }) => {
-        const tag = tags[name] ? tags[name].join(' ') : '';
+      return images.filter(({ name, tags }) => {
+        const tag =
+          tags && tags.length > 0 ? tags.map(({ name }) => name).join(' ') : '';
         for (let regExp of regExps) {
           if (regExp.test(name) || regExp.test(tag)) return true;
         }
@@ -95,13 +94,9 @@ const Images = ({ registry, ...props }: ImagesProps) => {
           `${window.location.origin}/api/image/${registryId}/${name}`
         );
         if (res && res.data) {
-          const { status, message, data } = res.data;
+          const { status, message } = res.data;
           if (status === 200) {
-            const newTags = { ...tags };
-            newTags[name] = newTags[name].filter(
-              (tag) => !data.includes(tag.name)
-            );
-            setTags(newTags);
+            setImages(images.filter((image) => image.name !== name));
           } else if (status === 405) {
             // Method Not Allowed, REGISTRY_STORAGE_DELETE_ENABLED = "true"
             alert(message);
@@ -113,7 +108,7 @@ const Images = ({ registry, ...props }: ImagesProps) => {
         console.log(error);
       }
     },
-    [tags, setTags]
+    []
   );
 
   useEffect(() => {
@@ -146,11 +141,11 @@ const Images = ({ registry, ...props }: ImagesProps) => {
             <p className='empty-content'>No Image available</p>
           ) : (
             <ul>
-              {filteredImages.map(({ name }) => {
+              {filteredImages.map(({ name, tags = [] }) => {
                 const item = {
                   registryId: registry.id,
                   name: name,
-                  tags: tags[name] || [],
+                  tags,
                 };
 
                 return (
@@ -185,26 +180,6 @@ export const getServerSideProps = async ({
     const { status, data } = result.data;
     if (status === 200) {
       props['registry'] = data;
-      if (data.images) {
-        await promiseAll(
-          data.images.map(async ({ name }) => {
-            try {
-              const result = await axios.get<ApiResult<Tag[]>>(
-                `http://${process.env.host}:${process.env.port}/api/tags/${id}/${name}`
-              );
-
-              if (result && result.data) {
-                const { status, data } = result.data;
-                if (status === 200) props.tags[name] = data;
-              }
-
-              return null;
-            } catch (error) {
-              console.log(error);
-            }
-          })
-        );
-      }
     }
   }
 
