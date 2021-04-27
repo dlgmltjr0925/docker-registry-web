@@ -1,13 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import axios, { AxiosRequestConfig } from 'axios';
+import { NextApiRequest, NextApiResponse } from "next";
 
-import Api from '../../../utils/Api';
-import { Registry } from '../../../interfaces';
-import { Status } from '../../../utils/ApiError';
-import { getRegistries } from '../../../utils/localStorage';
-import { getRegistyUrl } from '../../../utils/dockerRegistry';
-import { promiseAll } from '../../../utils/async';
-
+import Api from "../../../utils/Api";
+import { Registry } from "../../../interfaces";
+import { Status } from "../../../utils/ApiError";
+import { getRegistries } from "../../../utils/localStorage";
+import {
+  GetImagesArgs,
+  getImages,
+  getTags,
+} from "../../../utils/dockerRegistry";
+import { promiseAll } from "../../../utils/async";
+import { ApiResult } from "../../../interfaces/api";
 class RegistryApi extends Api {
   async get(_: NextApiRequest, res: NextApiResponse) {
     try {
@@ -17,27 +20,27 @@ class RegistryApi extends Api {
         results.map(async (registry) => {
           const { url, token } = registry;
           try {
-            const registryUrl = getRegistyUrl(url, '/_catalog');
-            const config: AxiosRequestConfig = { headers: {} };
-            if (token) config.headers['Authorization'] = `Basic ${token}`;
+            const getImageArgs: GetImagesArgs = { host: url };
 
-            const res = await axios.get<{ repositories: string[] }>(
-              registryUrl,
-              config
+            if (token) getImageArgs.authorization = `Basic ${token}`;
+
+            const images = await getImages(getImageArgs);
+
+            const imagesWithTags = await promiseAll(
+              images.map(async (name: string) => {
+                return await getTags({
+                  ...getImageArgs,
+                  name,
+                });
+              })
             );
 
-            if (res && res.data) {
-              const { repositories } = res.data;
-              const images = repositories.map((name: string) => ({
-                name,
-              }));
-              return {
-                ...registry,
-                images,
-                checkedDate: new Date().toString(),
-                status: true,
-              };
-            }
+            return {
+              ...registry,
+              images: imagesWithTags,
+              checkedDate: new Date().toString(),
+              status: true,
+            };
           } catch (error) {
             console.error(error);
             return {
@@ -49,9 +52,13 @@ class RegistryApi extends Api {
         })
       )) as Registry[];
 
-      res.status(Status.OK).json({
-        registries,
-      });
+      const result: ApiResult<Registry[]> = {
+        status: 200,
+        message: "success",
+        data: registries,
+      };
+
+      res.status(Status.OK).json(result);
     } catch (error) {
       throw error;
     }

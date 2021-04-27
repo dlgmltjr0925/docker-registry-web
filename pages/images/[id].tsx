@@ -53,7 +53,7 @@ const Wrapper = styled.div<WrapperProps>`
   }
 `;
 
-const Images = ({ registry, ...props }: ImagesProps) => {
+const Images = ({ registry }: ImagesProps) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState<string>('');
   const [images, setImages] = useState<Image[]>(registry?.images || []);

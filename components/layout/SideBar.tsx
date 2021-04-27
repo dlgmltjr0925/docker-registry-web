@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { SideTab, SideTabType } from '../../utils/router';
+import React, { useCallback, useEffect, useState } from "react";
+import { SideTab, SideTabType } from "../../utils/router";
 
-import { ApiResult } from '../../interfaces/api';
-import IconConnect from '../../public/images/icon_connect.svg';
-import IconCube from '../../public/images/icon_cube.svg';
-import IconCubes from '../../public/images/icon_cubes.svg';
-import IconDashboard from '../../public/images/icon_dashboard.svg';
-import IconExchange from '../../public/images/icon_exchange.svg';
-import IconHome from '../../public/images/icon_home.svg';
-import IconTags from '../../public/images/icon_tags.svg';
-import Link from 'next/link';
-import { Registry } from '../../interfaces';
-import axios from 'axios';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { ApiResult } from "../../interfaces/api";
+import IconConnect from "../../public/images/icon_connect.svg";
+import IconCube from "../../public/images/icon_cube.svg";
+import IconCubes from "../../public/images/icon_cubes.svg";
+import IconDashboard from "../../public/images/icon_dashboard.svg";
+import IconExchange from "../../public/images/icon_exchange.svg";
+import IconHome from "../../public/images/icon_home.svg";
+import IconTags from "../../public/images/icon_tags.svg";
+import Link from "next/link";
+import { Registry } from "../../interfaces";
+import axios from "axios";
+import styled from "styled-components";
+import { useRouter } from "next/router";
 
 interface SideBarProps {
   isOpened: boolean;
@@ -33,7 +33,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
   min-height: inherit;
   color: #bebfdc;
   transition: transform 0.5s ease-in-out;
-  transform: translateX(${({ isOpened }) => (isOpened ? '0' : '-180px')});
+  transform: translateX(${({ isOpened }) => (isOpened ? "0" : "-180px")});
   overflow: hidden;
 
   .sidebar-header {
@@ -223,7 +223,7 @@ const getActiveClass = ({
     return true;
   });
 
-  return tab ? ' active' : '';
+  return tab ? " active" : "";
 };
 
 const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
@@ -231,7 +231,7 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
   const { query } = useRouter();
 
   const _getActiveClass = useCallback(
-    (args: Omit<getActiveClassArgs, 'tabs'>) => {
+    (args: Omit<getActiveClassArgs, "tabs">) => {
       return getActiveClass({ ...args, tabs });
     },
     [tabs]
@@ -266,30 +266,30 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
   return (
     <SideBarWrapper isOpened={isOpened}>
       {/* 사이드바 헤더 */}
-      <div className='sidebar-header'>
-        <Link href='/'>
+      <div className="sidebar-header">
+        <Link href="/">
           <a>
             <img
-              className='home-logo'
-              src='/images/home_logo.png'
-              alt='Home Logo'
+              className="home-logo"
+              src="/images/home_logo.png"
+              alt="Home Logo"
               width={45}
               height={45}
             />
             <span>Docker Registry</span>
           </a>
         </Link>
-        <div className='exchange-btn' onClick={onClickFold}>
-          <IconExchange className='icon' />
+        <div className="exchange-btn" onClick={onClickFold}>
+          <IconExchange className="icon" />
         </div>
       </div>
       {/* 사이드바 컨텐츠 */}
-      <div className='sidebar-content'>
-        <Link href='/'>
-          <div className={`side-element${_getActiveClass({ type: 'home' })}`}>
+      <div className="sidebar-content">
+        <Link href="/">
+          <div className={`side-element${_getActiveClass({ type: "home" })}`}>
             <span>home</span>
-            <div className='icon-wrapper'>
-              <IconHome className='icon' />
+            <div className="icon-wrapper">
+              <IconHome className="icon" />
             </div>
           </div>
         </Link>
@@ -297,9 +297,9 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
         {registry !== null && (
           <>
             {isOpened && (
-              <div className='connect-wrapper'>
-                <div className='icon-wrapper'>
-                  <IconConnect className='icon' />
+              <div className="connect-wrapper">
+                <div className="icon-wrapper">
+                  <IconConnect className="icon" />
                 </div>
                 <span>{registry.name}</span>
               </div>
@@ -307,44 +307,44 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
             <Link href={`/dashboard/${registry.id}`}>
               <div
                 className={`side-element${_getActiveClass({
-                  type: 'dashboard',
+                  type: "dashboard",
                 })}`}
               >
                 <span>Dashboard</span>
-                <div className='icon-wrapper'>
-                  <IconDashboard className='icon' />
+                <div className="icon-wrapper">
+                  <IconDashboard className="icon" />
                 </div>
               </div>
             </Link>
             <Link href={`/images/${registry.id}`}>
               <div
-                className={`side-element${_getActiveClass({ type: 'images' })}`}
+                className={`side-element${_getActiveClass({ type: "images" })}`}
               >
                 <span>Images</span>
-                <div className='icon-wrapper'>
-                  <IconCubes className='icon' />
+                <div className="icon-wrapper">
+                  <IconCubes className="icon" />
                 </div>
               </div>
             </Link>
-            <ul className='image-wrapper'>
-              {registry.images?.map(({ name, tags }) => {
+            <ul className="image-wrapper">
+              {registry.images?.map(({ name }) => {
                 const visible =
                   _getActiveClass({
-                    type: 'image',
+                    type: "image",
                     options: { name },
-                  }) !== '';
+                  }) !== "";
                 return (
                   <li key={name}>
                     <Link href={`/image/${registry.id}/${name}`}>
                       <div
                         className={`side-element${_getActiveClass({
-                          type: 'image',
+                          type: "image",
                           options: { name },
                         })}`}
                       >
                         <span>{name}</span>
-                        <div className='icon-wrapper'>
-                          <IconCube className='icon' />
+                        <div className="icon-wrapper">
+                          <IconCube className="icon" />
                         </div>
                       </div>
                     </Link>
@@ -352,13 +352,13 @@ const SideBar = ({ isOpened, onClickFold, tabs }: SideBarProps) => {
                       <Link href={`/tags/${registry.id}/${name}`}>
                         <div
                           className={`side-element${_getActiveClass({
-                            type: 'tags',
+                            type: "tags",
                             options: { name },
                           })}`}
                         >
-                          <span className='sub'>tags</span>
-                          <div className='icon-wrapper'>
-                            <IconTags className='icon' />
+                          <span className="sub">tags</span>
+                          <div className="icon-wrapper">
+                            <IconTags className="icon" />
                           </div>
                         </div>
                       </Link>

@@ -1,15 +1,15 @@
-import { Image } from '../schema/image';
-import Joi from 'joi';
-import { Registry } from '../schema/registry';
-import fs from 'fs';
-import getConfig from 'next/config';
-import path from 'path';
+import { Image } from "../schema/image";
+import Joi from "joi";
+import { Registry } from "../schema/registry";
+import fs from "fs";
+import getConfig from "next/config";
+import path from "path";
 
 const { serverRuntimeConfig } = getConfig();
 
 export const STORAGE_FILE_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
-  'data/docker-registry-web.json'
+  "data/docker-registry-web.json"
 );
 
 interface Table<T> {
@@ -24,7 +24,7 @@ let localStorage: null | LocalStorage<any> = null;
 const getLocalStorage = <T = any>(): LocalStorage<T> => {
   if (!localStorage) {
     localStorage = JSON.parse(
-      fs.readFileSync(STORAGE_FILE_PATH, 'utf-8')
+      fs.readFileSync(STORAGE_FILE_PATH, "utf-8")
     ) as LocalStorage<T>;
   }
 
@@ -39,7 +39,7 @@ const getTable = <T = any>(tableName: string): Table<T> => {
 const saveLocalStorage = <T>(data: LocalStorage<T>): void => {
   try {
     fs.writeFileSync(STORAGE_FILE_PATH, JSON.stringify(data, null, 2), {
-      encoding: 'utf-8',
+      encoding: "utf-8",
     });
   } catch (error) {
     throw error;
@@ -69,7 +69,7 @@ export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
       if (error) throw error;
 
       const localStorage = getLocalStorage<Registry>();
-      const registry = localStorage['registry'];
+      const registry = localStorage["registry"];
 
       const newRegistry: Registry = {
         id: ++registry.seq,
@@ -94,7 +94,7 @@ export const insertRegistry = ({ name, url, token }: InsertRegistryArgs) => {
 export const selectRegistryById = (id: number) => {
   return new Promise<Registry | null>((resolve, reject) => {
     try {
-      const registry = getTable<Registry>('registry');
+      const registry = getTable<Registry>("registry");
       const result = registry.values.find((item) => item.id === id);
       resolve(result || null);
     } catch (error) {
@@ -107,7 +107,7 @@ export const deleteRegistry = (id: number) => {
   return new Promise<boolean>((resolve, reject) => {
     try {
       const localStorage = getLocalStorage();
-      const registry = localStorage['registry'];
+      const registry = localStorage["registry"];
       registry.values = registry.values.filter((item) => item.id !== id);
 
       saveLocalStorage(localStorage);
@@ -119,10 +119,10 @@ export const deleteRegistry = (id: number) => {
   });
 };
 
-export const getRegistries = () => {
+export const getRegistries = (): Promise<Registry[]> => {
   return new Promise<Registry[]>((resolve, reject) => {
     try {
-      const registry = getTable<Registry>('registry');
+      const registry = getTable<Registry>("registry");
       resolve(registry.values);
     } catch (error) {
       reject(error);
@@ -153,7 +153,7 @@ export const insertImageByIdAndName = ({
       if (error) throw error;
 
       const localStorage = getLocalStorage();
-      const image = localStorage['image'] as Table<Image>;
+      const image = localStorage["image"] as Table<Image>;
 
       const newImage: Image = {
         id: ++image.seq,
@@ -183,7 +183,7 @@ export const selectImageByIdAndName = ({
       const { error } = imageByIdAndNameInput.validate({ registryId, name });
       if (error) throw error;
 
-      const image = getTable<Image>('image');
+      const image = getTable<Image>("image");
 
       const result = image.values.find(
         (item) => item.registryId === registryId && item.name === name
@@ -221,7 +221,7 @@ export const updateImageByIdAndName = ({
       if (error) throw error;
 
       const localStorage = getLocalStorage();
-      const image = localStorage['image'] as Table<Image>;
+      const image = localStorage["image"] as Table<Image>;
 
       const index = image.values.findIndex(
         (item) => item.registryId === registryId && item.name
@@ -253,7 +253,7 @@ export const deleteImageByIdAndName = ({
       if (error) throw error;
 
       const localStorage = getLocalStorage();
-      const image = localStorage['image'] as Table<Image>;
+      const image = localStorage["image"] as Table<Image>;
 
       image.values = image.values.filter(
         (item) => !(item.registryId === registryId && item.name === name)

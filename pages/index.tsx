@@ -1,13 +1,14 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from "react";
 
-import IconConnect from '../public/images/icon_connect.svg';
-import IconPlus from '../public/images/icon_plus.svg';
-import IconSearch from '../public/images/icon_search.svg';
-import Link from 'next/link';
-import { Registry } from '../interfaces';
-import RegistryItem from '../components/home/RegistryItem';
-import axios from 'axios';
-import styled from 'styled-components';
+import IconConnect from "../public/images/icon_connect.svg";
+import IconPlus from "../public/images/icon_plus.svg";
+import IconSearch from "../public/images/icon_search.svg";
+import Link from "next/link";
+import { Registry } from "../interfaces";
+import RegistryItem from "../components/home/RegistryItem";
+import axios from "axios";
+import styled from "styled-components";
+import { ApiResult } from "../interfaces/api";
 
 interface HomeProps {
   registries: Registry[];
@@ -52,7 +53,7 @@ const Wrapper = styled.div`
 
 const Home = ({ ...props }: HomeProps) => {
   const [registries, setRegistries] = useState<Registry[]>(props.registries);
-  const [keyword, setKeyword] = useState<string>('');
+  const [keyword, setKeyword] = useState<string>("");
 
   const _handleChangeKeyword = useCallback(
     ({ target: { value } }) => {
@@ -84,11 +85,11 @@ const Home = ({ ...props }: HomeProps) => {
   );
 
   const filteredRegistries = useMemo(() => {
-    if (keyword.trim() === '') return registries;
+    if (keyword.trim() === "") return registries;
     try {
       const regExps = keyword
         .trim()
-        .split(' ')
+        .split(" ")
         .map((keyword) => new RegExp(keyword));
       return registries.filter(({ name, url, images = [] }) => {
         for (let regExp of regExps) {
@@ -108,33 +109,33 @@ const Home = ({ ...props }: HomeProps) => {
 
   return (
     <Wrapper>
-      <div className='widget-wrapper'>
-        <div className='widget-header-wrapper'>
-          <div className='header-title'>
-            <IconConnect className='header-icon' />
+      <div className="widget-wrapper">
+        <div className="widget-header-wrapper">
+          <div className="header-title">
+            <IconConnect className="header-icon" />
             <span>Registries</span>
           </div>
         </div>
-        <div className='widget-row-wrapper'>
-          <Link href='/registries/new'>
-            <button className='button button-blue' type='button'>
-              <IconPlus className='button-icon' />
+        <div className="widget-row-wrapper">
+          <Link href="/registries/new">
+            <button className="button button-blue" type="button">
+              <IconPlus className="button-icon" />
               Add registry
             </button>
           </Link>
         </div>
-        <div className='widget-row-wrapper search-wrapper'>
-          <IconSearch className='search-icon' />
+        <div className="widget-row-wrapper search-wrapper">
+          <IconSearch className="search-icon" />
           <input
-            type='text'
-            placeholder='Search by name, url, image name...'
+            type="text"
+            placeholder="Search by name, url, image name..."
             value={keyword}
             onChange={_handleChangeKeyword}
           />
         </div>
-        <div className='widget-row-wrapper'>
+        <div className="widget-row-wrapper">
           {filteredRegistries.length === 0 ? (
-            <p className='empty-content'>No endpoint available</p>
+            <p className="empty-content">No endpoint available</p>
           ) : (
             <ul>
               {registries.map((registry) => (
@@ -158,13 +159,13 @@ export const getServerSideProps = async () => {
   };
 
   try {
-    const res = await axios.get<{ registries: Registry[] }>(
+    const res = await axios.get<ApiResult<Registry[]>>(
       `http://${process.env.host}:${process.env.port}/api/registries`
     );
 
     if (res && res.data) {
-      const { registries } = res.data;
-      props.registries = registries;
+      const { data } = res.data;
+      props.registries = data;
     }
   } catch (error) {
     console.error(error);
