@@ -106,6 +106,7 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       border-left: 3px solid transparent;
       cursor: pointer;
       box-sizing: border-box;
+      overflow: hidden;
 
       &:hover {
         border-left: 3px solid #e99d1a;
@@ -126,9 +127,14 @@ const SideBarWrapper = styled.div<SideBarWrapperProps>`
       }
 
       span {
+        display: inline-block;
+        width: 70%;
         font-size: 15px;
         line-height: 30px;
         margin-left: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &.sub {
           margin-left: 35px;
