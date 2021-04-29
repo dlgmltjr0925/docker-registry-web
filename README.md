@@ -1,6 +1,6 @@
 # Docker Registry Web
 
-This is a web project that can manage a private docker registry.
+This is a web project that can manage private docker registries.
 
 ## How to use it?
 
