@@ -1,8 +1,9 @@
 # Docker Registry Web [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) 
 
-#### Docker Registry Web은 docker registry 관리하는 툴입니다.
+## Docker Registry Web은 docker registry 관리 툴
+<img width="800" src="https://github.com/dlgmltjr0925/docker-registry-web/blob/master/docs/sample.gif?raw=true"/>
 
-#### 주요 기능
+## 주요 기능
 - Docker registry 통합 관리
 - 쉬운 등록 및 삭제
 - Docker registry에 저장되어 있는 이미지 목록 조회
