@@ -9,6 +9,8 @@
     "start": "next start",
     "tsc": "tsc",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
     "entrypoint": "sh ./scripts/entrypoint.sh"
   },
   "dependencies": {
