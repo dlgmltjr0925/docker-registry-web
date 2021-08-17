@@ -28,3 +28,6 @@ docker run -d -p 3000:3000 --name docker-registry-web dlgmltjr0925/docker-regist
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/dlgmltjr0925/docker-registry-web/master/kubernetes-deployment.yaml
 ```
+
+## Notice
+  - 기능 개선을 위해 신규 프로젝트([Docker-registry-folder](https://github.com/dlgmltjr0925/docker-registry-folder))로 재개발중
